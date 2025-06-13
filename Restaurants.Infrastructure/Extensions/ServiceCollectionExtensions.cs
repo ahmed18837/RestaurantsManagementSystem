@@ -20,6 +20,7 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddDbContext<RestaurantsDbContext>();
 
             services.AddScoped<IRestaurantsRepository, RestaurantsRepository>();
+            services.AddScoped<IDishesRepository, DishesRepository>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurants.Application.Common;
 using Restaurants.Application.Restaurants.Dtos;
 using Restaurants.Domain.Repositories;
 
@@ -8,17 +9,21 @@ namespace Restaurants.Application.Restaurants.Queries.GetAllRestaurants
 {
     public class GetAllRestaurantsQueryHandler(ILogger<GetAllRestaurantsQueryHandler> logger,
      IMapper mapper,
-     IRestaurantsRepository restaurantsRepository) : IRequestHandler<GetAllRestaurantsQuery, IEnumerable<RestaurantDto>>
+     IRestaurantsRepository restaurantsRepository) : IRequestHandler<GetAllRestaurantsQuery, PagedResult<RestaurantDto>>
     {
-        //logger.LogInformation("Getting all restaurants");
-        public async Task<IEnumerable<RestaurantDto>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<RestaurantDto>> Handle(GetAllRestaurantsQuery request, CancellationToken cancellationToken)
         {
-            var restaurants = await restaurantsRepository.GetAllAsync();
+            logger.LogInformation("Getting all restaurants");
+            var (restaurants, totalCount) = await restaurantsRepository.GetAllMatchingAsync(request.SearchPhrase,
+                request.PageSize,
+                request.PageNumber,
+                request.SortBy,
+                request.SortDirection);
 
             var restaurantsDtos = mapper.Map<IEnumerable<RestaurantDto>>(restaurants);
 
-            //var result = new PagedResult<RestaurantDto>(restaurantsDtos, totalCount, request.PageSize, request.PageNumber);
-            return restaurantsDtos;
+            var result = new PagedResult<RestaurantDto>(restaurantsDtos, totalCount, request.PageSize, request.PageNumber);
+            return result;
         }
     }
 }
