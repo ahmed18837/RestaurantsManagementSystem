@@ -1,14 +1,11 @@
 ﻿using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Repositories.GenericRepository;
 
 namespace Restaurants.Domain.Repositories
 {
-    public interface IRestaurantsRepository
+    public interface IRestaurantsRepository : IGenericRepository<Restaurant>
     {
-        Task<IEnumerable<Restaurant>> GetAllAsync();
-        Task<Restaurant?> GetByIdAsync(int id);
-        Task<int> Create(Restaurant entity);
-        Task Delete(Restaurant entity);
         Task SaveChanges();
         Task<(IEnumerable<Restaurant>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
     }

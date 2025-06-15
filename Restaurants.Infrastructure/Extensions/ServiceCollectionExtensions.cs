@@ -21,6 +21,10 @@ namespace Restaurants.Infrastructure.Extensions
 
             services.AddScoped<IRestaurantsRepository, RestaurantsRepository>();
             services.AddScoped<IDishesRepository, DishesRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
         }
     }
 }

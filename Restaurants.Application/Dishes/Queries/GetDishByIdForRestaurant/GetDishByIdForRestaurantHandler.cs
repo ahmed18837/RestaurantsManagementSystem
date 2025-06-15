@@ -8,8 +8,8 @@ using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant
 {
-    public class GetDishByIdForRestaurantQueryHandler(
-    ILogger<GetDishByIdForRestaurantQueryHandler> logger,
+    public class GetDishByIdForRestaurantHandler(
+    ILogger<GetDishByIdForRestaurantHandler> logger,
     IRestaurantsRepository restaurantsRepository,
     IDishesRepository dishesRepository,
     IMapper mapper) : IRequestHandler<GetDishByIdForRestaurantQuery, DishDto>

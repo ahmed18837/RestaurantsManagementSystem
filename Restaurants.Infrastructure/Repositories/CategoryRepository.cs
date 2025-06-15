@@ -8,29 +8,35 @@ using System.Linq.Expressions;
 
 namespace Restaurants.Infrastructure.Repositories
 {
-    public class DishesRepository(RestaurantsDbContext dbContext) : GenericRepository<Dish>(dbContext), IDishesRepository
+    public class CategoryRepository(RestaurantsDbContext dbContext) : GenericRepository<Category>(dbContext), ICategoryRepository
     {
-        //public async Task<int> Create(Dish entity)
+        //public async Task<int> Create(Category entity)
         //{
-        //    dbContext.Dishes.Add(entity);
+        //    dbContext.Categories.Add(entity);
         //    await dbContext.SaveChangesAsync();
         //    return entity.Id;
-        //}       
-
-        //public async Task<Dish?> GetByIdAsync(int id)
-        //{
-        //    var dish = await dbContext.Dishes
-        //       .FirstOrDefaultAsync(d => d.Id == id);
-
-        //    return dish;
         //}
 
-        public async Task<(IEnumerable<Dish>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
+        //public async Task Delete(Category entity)
+        //{
+        //    dbContext.Remove(entity);
+        //    await dbContext.SaveChangesAsync();
+        //}
+
+        //public async Task<Category?> GetByIdAsync(int id)
+        //{
+        //    var category = await dbContext.Categories
+        //       .FirstOrDefaultAsync(d => d.Id == id);
+
+        //    return category;
+        //}
+
+        public async Task<(IEnumerable<Category>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
         {
             var searchPhraseLower = searchPhrase?.ToLower();
 
             var baseQuery = dbContext
-                .Dishes
+                .Categories
                 .Where(d => searchPhraseLower == null || (d.Name.ToLower().Contains(searchPhraseLower)
                                                        || d.Description!.ToLower().Contains(searchPhraseLower)));
 
@@ -38,11 +44,10 @@ namespace Restaurants.Infrastructure.Repositories
 
             if (sortBy != null)
             {
-                var columnsSelector = new Dictionary<string, Expression<Func<Dish, object>>>
+                var columnsSelector = new Dictionary<string, Expression<Func<Category, object>>>
             {
-                { nameof(Dish.Name), d => d.Name },
-                { nameof(Dish.Description), d => d.Description! },
-                { nameof(Dish.Price), d => d.Price },
+                { nameof(Category.Name), d => d.Name },
+                { nameof(Category.Description), d => d.Description! },
             };
 
                 var selectedColumn = columnsSelector[sortBy];
@@ -52,18 +57,12 @@ namespace Restaurants.Infrastructure.Repositories
                     : baseQuery.OrderByDescending(selectedColumn);
             }
 
-            var dishes = await baseQuery
+            var categories = await baseQuery
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
-                .ToListAsync();
+            .ToListAsync();
 
-            return (dishes, totalCount);
-        }
-
-        public async Task Delete(IEnumerable<Dish> entities)
-        {
-            dbContext.RemoveRange(entities);
-            await dbContext.SaveChangesAsync();
+            return (categories, totalCount);
         }
 
     }

@@ -3,30 +3,40 @@ using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
+using Restaurants.Infrastructure.Repositories.GenericRepository;
 using System.Linq.Expressions;
 
 namespace Restaurants.Infrastructure.Repositories
 {
-    public class RestaurantsRepository(RestaurantsDbContext dbContext) : IRestaurantsRepository
+    public class RestaurantsRepository(RestaurantsDbContext dbContext) : GenericRepository<Restaurant>(dbContext), IRestaurantsRepository
     {
-        public async Task<int> Create(Restaurant entity)
-        {
-            dbContext.Restaurants.Add(entity);
-            await dbContext.SaveChangesAsync();
-            return entity.Id;
-        }
+        //public async Task<int> Create(Restaurant entity)
+        //{
+        //    dbContext.Restaurants.Add(entity);
+        //    await dbContext.SaveChangesAsync();
+        //    return entity.Id;
+        //}
 
-        public async Task Delete(Restaurant entity)
-        {
-            dbContext.Remove(entity);
-            await dbContext.SaveChangesAsync();
-        }
+        //public async Task Delete(Restaurant entity)
+        //{
+        //    dbContext.Remove(entity);
+        //    await dbContext.SaveChangesAsync();
+        //}
 
-        public async Task<IEnumerable<Restaurant>> GetAllAsync()
-        {
-            var restaurants = await dbContext.Restaurants.ToListAsync();
-            return restaurants;
-        }
+        //public async Task<IEnumerable<Restaurant>> GetAllAsync()
+        //{
+        //    var restaurants = await dbContext.Restaurants.ToListAsync();
+        //    return restaurants;
+        //}
+
+        //public async Task<Restaurant?> GetByIdAsync(int id)
+        //{
+        //    var restaurant = await dbContext.Restaurants
+        //        .Include(r => r.Dishes)
+        //        .FirstOrDefaultAsync(x => x.Id == id);
+
+        //    return restaurant;
+        //}
 
         public async Task<(IEnumerable<Restaurant>, int)> GetAllMatchingAsync(string? searchPhrase,
              int pageSize,
@@ -66,15 +76,6 @@ namespace Restaurants.Infrastructure.Repositories
                 .ToListAsync();
 
             return (restaurants, totalCount);
-        }
-
-        public async Task<Restaurant?> GetByIdAsync(int id)
-        {
-            var restaurant = await dbContext.Restaurants
-                .Include(r => r.Dishes)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            return restaurant;
         }
 
         public Task SaveChanges()
