@@ -48,6 +48,7 @@ namespace Restaurants.Infrastructure.Repositories
 
             var baseQuery = dbContext
                 .Restaurants
+                .AsNoTracking()
                 .Where(r => searchPhraseLower == null || (r.Name.ToLower().Contains(searchPhraseLower)
                                                        || r.Description.ToLower().Contains(searchPhraseLower)
                                                        || r.Category.ToLower().Contains(searchPhraseLower)));

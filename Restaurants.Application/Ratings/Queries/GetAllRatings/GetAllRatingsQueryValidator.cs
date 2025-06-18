@@ -1,17 +1,17 @@
 ﻿using FluentValidation;
-using Restaurants.Application.Dishes.Dtos;
+using Restaurants.Application.Ratings.Dtos;
 
-namespace Restaurants.Application.Dishes.Queries.GetAllDishes
+namespace Restaurants.Application.Ratings.Queries.GetAllRatings
 {
-    public class GetAllDishesValidator : AbstractValidator<GetAllDishesQuery>
+    public class GetAllRatingsQueryValidator : AbstractValidator<GetAllRatingsQuery>
     {
         private int[] allowPageSizes = [5, 10, 15, 30];
-        private string[] allowedSortByColumnNames = [nameof(DishDto.Name),
-        nameof(DishDto.Price),
-        nameof(DishDto.Description)];
+        private string[] allowedSortByColumnNames = [nameof(RatingDto.Comment),
+        nameof(RatingDto.Stars),
+        nameof(RatingDto.CreatedAt)];
 
 
-        public GetAllDishesValidator()
+        public GetAllRatingsQueryValidator()
         {
             RuleFor(r => r.PageNumber)
                 .GreaterThanOrEqualTo(1);

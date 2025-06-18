@@ -10,14 +10,14 @@ namespace Restaurants.Application.Categories.Queries.GetCategoryById
 {
     public class GetCategoryByIdHandler(
     ILogger<GetCategoryByIdHandler> logger,
-    ICategoryRepository categoryRepository,
+    ICategoriesRepository categoriesRepository,
     IMapper mapper) : IRequestHandler<GetCategoryByIdQuery, CategoryDto>
     {
         public async Task<CategoryDto> Handle(GetCategoryByIdQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Category with id : {CategoryID}", request.CategoryId);
 
-            var category = await categoryRepository.GetByIdAsync(request.CategoryId)
+            var category = await categoriesRepository.GetByIdAsync(request.CategoryId)
                 ?? throw new NotFoundException(nameof(Category), request.CategoryId.ToString());
 
             var result = mapper.Map<CategoryDto>(category);

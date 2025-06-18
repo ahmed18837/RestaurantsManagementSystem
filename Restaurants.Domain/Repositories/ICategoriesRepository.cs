@@ -4,7 +4,7 @@ using Restaurants.Domain.Repositories.GenericRepository;
 
 namespace Restaurants.Domain.Repositories
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface ICategoriesRepository : IGenericRepository<Category>
     {
         Task<(IEnumerable<Category>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
         //Task<Category?> GetByIdAsync(int id);

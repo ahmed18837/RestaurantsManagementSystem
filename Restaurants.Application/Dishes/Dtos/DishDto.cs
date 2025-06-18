@@ -8,7 +8,9 @@
         public decimal Price { get; set; }
         public string? ImageFileName { get; set; }
         public int RestaurantId { get; set; }
+        public string RestaurantName { get; set; } = default!;
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = default!;
 
         //public static DishDto FromEntity(Dish dish)
         //{

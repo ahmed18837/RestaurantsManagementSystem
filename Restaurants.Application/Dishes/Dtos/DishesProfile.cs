@@ -9,7 +9,11 @@ namespace Restaurants.Application.Dishes.Dtos
         public DishesProfile()
         {
             //CreateMap<CreateDishCommand, Dish>();
-            CreateMap<Dish, DishDto>();
+            CreateMap<Dish, DishDto>()
+                 .ForMember(d => d.RestaurantName,
+                    opt => opt.MapFrom(src => src.Restaurant.Name))
+                  .ForMember(d => d.CategoryName,
+                    opt => opt.MapFrom(src => src.Category.Name)); ;
         }
     }
 }

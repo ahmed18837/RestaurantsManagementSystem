@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Restaurants.Infrastructure.Repositories
 {
-    public class CategoryRepository(RestaurantsDbContext dbContext) : GenericRepository<Category>(dbContext), ICategoryRepository
+    public class CategoriesRepository(RestaurantsDbContext dbContext) : GenericRepository<Category>(dbContext), ICategoriesRepository
     {
         //public async Task<int> Create(Category entity)
         //{
@@ -37,6 +37,7 @@ namespace Restaurants.Infrastructure.Repositories
 
             var baseQuery = dbContext
                 .Categories
+                .AsNoTracking()
                 .Where(d => searchPhraseLower == null || (d.Name.ToLower().Contains(searchPhraseLower)
                                                        || d.Description!.ToLower().Contains(searchPhraseLower)));
 
@@ -60,6 +61,7 @@ namespace Restaurants.Infrastructure.Repositories
             var categories = await baseQuery
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
+                .AsNoTracking()
             .ToListAsync();
 
             return (categories, totalCount);

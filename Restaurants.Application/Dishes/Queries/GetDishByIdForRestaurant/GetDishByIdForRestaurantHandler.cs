@@ -26,7 +26,7 @@ namespace Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant
             //var dish = restaurant.Dishes.FirstOrDefault(d => d.Id == request.DishId)
             //    ?? throw new NotFoundException(nameof(Dish), request.DishId.ToString()); // If Use Include In Repo (GetByIdAsync For Restaurant)
 
-            var dish = await dishesRepository.GetByIdAsync(request.DishId)
+            var dish = await dishesRepository.GetByIdIncludeRestaurantAndCategory(request.DishId)
                 ?? throw new NotFoundException(nameof(Dish), request.DishId.ToString());
 
             var result = mapper.Map<DishDto>(dish);

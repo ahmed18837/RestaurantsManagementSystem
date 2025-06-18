@@ -7,15 +7,15 @@ using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.Categories.Queries.GetAllCategories
 {
-    public class GetAllCategoriesHandler(ILogger<GetAllCategoriesHandler> logger,
-    ICategoryRepository categoryRepository,
+    public class GetAllCategoriesQueryHandler(ILogger<GetAllCategoriesQueryHandler> logger,
+    ICategoriesRepository categoriesRepository,
     IMapper mapper) : IRequestHandler<GetAllCategoriesQuery, PagedResult<CategoryDto>>
     {
         async Task<PagedResult<CategoryDto>> IRequestHandler<GetAllCategoriesQuery, PagedResult<CategoryDto>>.Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Retrieving All Categories");
 
-            var (categories, totalCount) = await categoryRepository.GetAllMatchingAsync(request.SearchPhrase,
+            var (categories, totalCount) = await categoriesRepository.GetAllMatchingAsync(request.SearchPhrase,
                request.PageSize,
                request.PageNumber,
                request.SortBy,

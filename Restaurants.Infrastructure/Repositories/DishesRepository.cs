@@ -25,36 +25,50 @@ namespace Restaurants.Infrastructure.Repositories
         //    return dish;
         //}
 
-        public async Task<(IEnumerable<Dish>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
+        public async Task<(IEnumerable<Dish> Dishes, int TotalCount)> GetAllMatchingAsync(
+       string? searchPhrase,
+       int pageSize,
+       int pageNumber,
+       string? sortBy,
+       SortDirection sortDirection)
         {
-            var searchPhraseLower = searchPhrase?.ToLower();
 
-            var baseQuery = dbContext
-                .Dishes
-                .Where(d => searchPhraseLower == null || (d.Name.ToLower().Contains(searchPhraseLower)
-                                                       || d.Description!.ToLower().Contains(searchPhraseLower)));
+            // 1) تجهيز عبارة البحث
+            string? term = string.IsNullOrWhiteSpace(searchPhrase)
+                ? null
+                : searchPhrase.Trim().ToLower();
 
-            var totalCount = await baseQuery.CountAsync();
+            // 2) الاستعلام الأساسى مع Includes صحيحة
+            IQueryable<Dish> query = dbContext.Dishes.AsNoTracking()
+                .Include(d => d.Restaurant)
+                .Include(d => d.Category)
+                .Where(d =>
+                    term == null ||
+                    EF.Functions.Like(d.Name.ToLower(), $"%{term}%") ||
+                    EF.Functions.Like((d.Description ?? "").ToLower(), $"%{term}%"));
 
-            if (sortBy != null)
+            int totalCount = await query.CountAsync();
+
+            // 3) ترتيب ديناميكى آمن
+            var columns = new Dictionary<string, Expression<Func<Dish, object>>>(StringComparer.OrdinalIgnoreCase)
             {
-                var columnsSelector = new Dictionary<string, Expression<Func<Dish, object>>>
-            {
-                { nameof(Dish.Name), d => d.Name },
-                { nameof(Dish.Description), d => d.Description! },
-                { nameof(Dish.Price), d => d.Price },
+                [nameof(Dish.Name)] = d => d.Name,
+                [nameof(Dish.Description)] = d => d.Description!,
+                [nameof(Dish.Price)] = d => d.Price
             };
 
-                var selectedColumn = columnsSelector[sortBy];
-
-                baseQuery = sortDirection == SortDirection.Ascending
-                    ? baseQuery.OrderBy(selectedColumn)
-                    : baseQuery.OrderByDescending(selectedColumn);
+            if (!string.IsNullOrEmpty(sortBy) && columns.TryGetValue(sortBy, out var column))
+            {
+                query = sortDirection == SortDirection.Ascending
+                      ? query.OrderBy(column)
+                      : query.OrderByDescending(column);
             }
 
-            var dishes = await baseQuery
+            // 4) Paging
+            List<Dish> dishes = await query
                 .Skip(pageSize * (pageNumber - 1))
                 .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
 
             return (dishes, totalCount);
@@ -66,5 +80,15 @@ namespace Restaurants.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<Dish?> GetByIdIncludeRestaurantAndCategory(int id)
+        {
+            var dish = await dbContext.Dishes
+                .AsNoTracking()
+                .Include(d => d.Restaurant)
+                .Include(d => d.Category)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            return dish;
+        }
     }
 }
