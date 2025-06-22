@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Customers.Dtos;
 using Restaurants.Application.Customers.Queries.GetAllCustomers;
 using Restaurants.Application.Customers.Queries.GetCustomerById;
+using Restaurants.Application.Customers.Queries.GetCustomerByName;
 
 namespace Restaurants.API.Controllers
 {
@@ -21,6 +22,13 @@ namespace Restaurants.API.Controllers
         public async Task<ActionResult<CustomerDto?>> GetById([FromRoute] int id)
         {
             var customer = await mediator.Send(new GetCustomerByIdQuery(id));
+            return Ok(customer);
+        }
+
+        [HttpGet("Name{name}")]
+        public async Task<ActionResult<CustomerDto?>> GetByName([FromRoute] string name)
+        {
+            var customer = await mediator.Send(new GetCustomerByNameQuery(name));
             return Ok(customer);
         }
     }

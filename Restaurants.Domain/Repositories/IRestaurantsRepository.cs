@@ -6,7 +6,6 @@ namespace Restaurants.Domain.Repositories
 {
     public interface IRestaurantsRepository : IGenericRepository<Restaurant>
     {
-        Task SaveChanges();
         Task<(IEnumerable<Restaurant>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
     }
 }

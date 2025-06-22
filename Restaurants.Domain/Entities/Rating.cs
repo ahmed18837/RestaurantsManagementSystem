@@ -26,7 +26,7 @@ namespace Restaurants.Domain.Entities
 
         public Dish Dish { get; set; } = default!;
 
-        public int? RestaurantId { get; set; }
-        public Restaurant? Restaurant { get; set; }
+        public int RestaurantId { get; set; }
+        public Restaurant Restaurant { get; set; } = default!;
     }
 }

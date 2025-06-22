@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Common;
 using Restaurants.Application.Dishes.Dtos;
 using Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant;
+using Restaurants.Application.Dishes.Queries.GetDishByName;
 using Restaurants.Application.Dishes.Queries.GetDishesForRestaurant;
 using Restaurants.Domain.Constants;
 
@@ -38,6 +39,13 @@ namespace Restaurants.API.Controllers
         public async Task<ActionResult<DishDto>> GetByIdForRestaurant([FromRoute] int restaurantId, [FromRoute] int dishId)
         {
             var dish = await mediator.Send(new GetDishByIdForRestaurantQuery(restaurantId, dishId));
+            return Ok(dish);
+        }
+
+        [HttpGet("Name{name}")]
+        public async Task<ActionResult<DishDto?>> GetByName([FromRoute] string name)
+        {
+            var dish = await mediator.Send(new GetDishByNameQuery(name));
             return Ok(dish);
         }
     }

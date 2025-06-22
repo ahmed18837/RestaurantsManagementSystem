@@ -14,6 +14,10 @@ namespace Restaurants.Infrastructure.Repositories.GenericRepository
         public async Task<T?> GetByIdAsync(int id)
             => await Set.FindAsync(id);
 
+        public async Task<T?> GetByNameAsync(string name)
+       => await Set.FirstOrDefaultAsync(
+               e => EF.Property<string>(e, "Name").Contains(name));
+
         public async Task AddAsync(T entity)
         {
             await Set.AddAsync(entity);
@@ -31,5 +35,8 @@ namespace Restaurants.Infrastructure.Repositories.GenericRepository
             Set.Remove(entity);
             await dbContext.SaveChangesAsync();
         }
+
+        public Task SaveChanges()
+         => dbContext.SaveChangesAsync();
     }
 }

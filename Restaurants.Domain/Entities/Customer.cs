@@ -7,7 +7,7 @@ namespace Restaurants.Domain.Entities
         public int Id { get; set; }
 
         [Required, MaxLength(100)]
-        public string FullName { get; set; } = default!;
+        public string Name { get; set; } = default!;
 
         [EmailAddress, MaxLength(100)]
         public string Email { get; set; } = default!;

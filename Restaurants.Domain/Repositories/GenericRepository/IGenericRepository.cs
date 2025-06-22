@@ -4,8 +4,10 @@
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
+        Task<T?> GetByNameAsync(string name);
         Task AddAsync(T entity);
         Task UpdateAsync(int id, T entity);
         Task DeleteAsync(T entity);
+        Task SaveChanges();
     }
 }

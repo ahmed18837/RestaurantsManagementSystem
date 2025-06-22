@@ -17,7 +17,7 @@ namespace Restaurants.Infrastructure.Repositories
             var baseQuery = dbContext
                 .Customers
                 .AsNoTracking()
-                .Where(d => searchPhraseLower == null || (d.FullName.ToLower().Contains(searchPhraseLower)
+                .Where(d => searchPhraseLower == null || (d.Name.ToLower().Contains(searchPhraseLower)
                                                        || d.Email!.ToLower().Contains(searchPhraseLower))
                                                        || d.PhoneNumber!.ToLower().Contains(searchPhraseLower));
 
@@ -27,7 +27,7 @@ namespace Restaurants.Infrastructure.Repositories
             {
                 var columnsSelector = new Dictionary<string, Expression<Func<Customer, object>>>
             {
-                { nameof(Customer.FullName), d => d.FullName },
+                { nameof(Customer.Name), d => d.Name },
                 { nameof(Customer.Email), d => d.Email! },
             };
 

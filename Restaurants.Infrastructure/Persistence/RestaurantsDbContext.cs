@@ -89,7 +89,6 @@ namespace Restaurants.Infrastructure.Persistence
                    .HasOne(r => r.Dish)
                    .WithMany(d => d.Ratings)
                    .HasForeignKey(r => r.DishId)
-                   .HasForeignKey(r => r.DishId)
                    .OnDelete(DeleteBehavior.Cascade); // لما يمسح الطبق امسح تقييماته
 
             // Restaurant - Ratings (One-to-Many)

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Restaurants.Application.Ratings.Commands.CreateRating;
+using Restaurants.Application.Ratings.Commands.UpdateRating;
 using Restaurants.Domain.Entities;
 
 namespace Restaurants.Application.Ratings.Dtos
@@ -13,7 +15,11 @@ namespace Restaurants.Application.Ratings.Dtos
                    .ForMember(d => d.DishName,
                     opt => opt.MapFrom(src => src.Dish.Name))
                    .ForMember(d => d.CustomerName,
-                    opt => opt.MapFrom(src => src.Customer.FullName));
+                    opt => opt.MapFrom(src => src.Customer.Name));
+
+            CreateMap<CreateRatingCommand, Rating>();
+
+            CreateMap<UpdateRatingCommand, Rating>();
         }
     }
 }

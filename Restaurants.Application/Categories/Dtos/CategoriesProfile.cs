@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Restaurants.Application.Categories.Commands.CreateCategory;
+using Restaurants.Application.Categories.Commands.UpdateCategory;
 using Restaurants.Domain.Entities;
 
 namespace Restaurants.Application.Categories.Dtos
@@ -7,8 +9,11 @@ namespace Restaurants.Application.Categories.Dtos
     {
         public CategoriesProfile()
         {
-            //CreateMap<CreateDishCommand, Dish>();
             CreateMap<Category, CategoryDto>();
+
+            CreateMap<CreateCategoryCommand, Category>();
+
+            CreateMap<UpdateCategoryCommand, Category>();
         }
     }
 }

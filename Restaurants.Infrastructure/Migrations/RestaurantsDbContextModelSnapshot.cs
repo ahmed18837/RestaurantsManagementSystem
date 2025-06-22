@@ -59,7 +59,7 @@ namespace Restaurants.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -188,7 +188,7 @@ namespace Restaurants.Infrastructure.Migrations
                     b.Property<int>("DishId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.Property<int>("Stars")
@@ -313,7 +313,8 @@ namespace Restaurants.Infrastructure.Migrations
                     b.HasOne("Restaurants.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("Ratings")
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
