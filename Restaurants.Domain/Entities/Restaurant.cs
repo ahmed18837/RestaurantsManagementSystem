@@ -12,9 +12,6 @@ namespace Restaurants.Domain.Entities
         [MaxLength(500)]
         public string Description { get; set; } = default!;
 
-        [MaxLength(100)]
-        public string Category { get; set; } = default!;
-
         public bool HasDelivery { get; set; }
 
         [EmailAddress, MaxLength(100)]

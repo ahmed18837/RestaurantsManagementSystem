@@ -30,22 +30,22 @@ namespace Restaurants.API.Controllers
             return Ok(customer);
         }
 
-        [HttpGet("Name{name}")]
-        public async Task<ActionResult<CustomerDto?>> GetByName([FromRoute] string name = "Ahmed Ali")
+        [HttpGet("Name")]
+        public async Task<ActionResult<CustomerDto?>> GetByName([FromQuery] string name = "Ahmed Ali")
         {
             var customer = await mediator.Send(new GetCustomerByNameQuery(name));
             return Ok(customer);
         }
 
-        [HttpGet("PhoneNumber{phoneNumber}")]
-        public async Task<ActionResult<CustomerDto?>> GetByPhoneNumber([FromRoute] string phoneNumber = "0100000001")
+        [HttpGet("PhoneNumber")]
+        public async Task<ActionResult<CustomerDto?>> GetByPhoneNumber([FromQuery] string phoneNumber = "0100000001")
         {
             var customer = await mediator.Send(new GetCustomerByPhoneNumberQuery(phoneNumber));
             return Ok(customer);
         }
 
-        [HttpGet("Email{email}")]
-        public async Task<ActionResult<CustomerDto?>> GetByEmail([FromRoute] string email = "user@gmail.com")
+        [HttpGet("Email")]
+        public async Task<ActionResult<CustomerDto?>> GetByEmail([FromQuery] string email = "user@gmail.com")
         {
             var customer = await mediator.Send(new GetCustomerByEmailQuery(email));
             return Ok(customer);

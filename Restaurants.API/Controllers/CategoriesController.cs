@@ -29,8 +29,8 @@ namespace Restaurants.API.Controllers
             return Ok(category);
         }
 
-        [HttpGet("Name{name}")]
-        public async Task<ActionResult<CategoryDto?>> GetByName([FromRoute] string name)
+        [HttpGet("Name")]
+        public async Task<ActionResult<CategoryDto?>> GetByName([FromQuery] string name)
         {
             var category = await mediator.Send(new GetCategoryByNameQuery(name));
             return Ok(category);

@@ -5,8 +5,11 @@ using Restaurants.Application.Restaurants.Commands.DeleteRestaurant;
 using Restaurants.Application.Restaurants.Commands.UpdateRestaurant;
 using Restaurants.Application.Restaurants.Dtos;
 using Restaurants.Application.Restaurants.Queries.GetAllRestaurants;
+using Restaurants.Application.Restaurants.Queries.GetCategoriesForRestaurant;
 using Restaurants.Application.Restaurants.Queries.GetRestaurantById;
 using Restaurants.Application.Restaurants.Queries.GetRestaurantByName;
+using Restaurants.Application.Restaurants.Queries.GetRestaurantStatistics;
+using Restaurants.Application.Restaurants.Queries.GetTopRatedRestaurants;
 
 namespace Restaurants.API.Controllers
 {
@@ -28,8 +31,8 @@ namespace Restaurants.API.Controllers
             return Ok(restaurant);
         }
 
-        [HttpGet("Name{name}")]
-        public async Task<ActionResult<RestaurantDto?>> GetByName([FromRoute] string name)
+        [HttpGet("Name")]
+        public async Task<ActionResult<RestaurantDto?>> GetByName([FromQuery] string name)
         {
             var restaurant = await mediator.Send(new GetRestaurantByNameQuery(name));
             return Ok(restaurant);
@@ -63,6 +66,27 @@ namespace Restaurants.API.Controllers
         {
             int id = await mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id }, null);
+        }
+
+        [HttpGet("{restaurantId}/Categories")]
+        public async Task<ActionResult<List<string>>> GetCategoriesForRestaurant([FromRoute] int restaurantId = 400)
+        {
+            var categories = await mediator.Send(new GetCategoriesForRestaurantQuery(restaurantId));
+            return Ok(categories);
+        }
+
+        [HttpGet("TopRated")]
+        public async Task<ActionResult<List<RestaurantDto>>> GetTopRated([FromQuery] int count = 5)
+        {
+            var result = await mediator.Send(new GetTopRatedRestaurantsQuery(count));
+            return Ok(result);
+        }
+
+        [HttpGet("{restaurantId}/Statistics")]
+        public async Task<ActionResult<RestaurantStatisticsDto>> GetStatistics([FromRoute] int restaurantId)
+        {
+            var result = await mediator.Send(new GetRestaurantStatisticsQuery(restaurantId));
+            return Ok(result);
         }
     }
 }
