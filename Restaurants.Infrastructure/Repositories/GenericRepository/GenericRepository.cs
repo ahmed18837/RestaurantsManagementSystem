@@ -38,5 +38,8 @@ namespace Restaurants.Infrastructure.Repositories.GenericRepository
 
         public Task SaveChanges()
          => dbContext.SaveChangesAsync();
+
+        public IQueryable<T> Query()
+         => dbContext.Set<T>().AsQueryable();
     }
 }

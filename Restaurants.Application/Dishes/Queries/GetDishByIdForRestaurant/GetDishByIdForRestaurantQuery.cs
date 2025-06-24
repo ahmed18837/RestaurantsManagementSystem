@@ -8,5 +8,4 @@ namespace Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant
         public int RestaurantId { get; } = restaurantId;
         public int DishId { get; } = dishId;
     }
-
 }

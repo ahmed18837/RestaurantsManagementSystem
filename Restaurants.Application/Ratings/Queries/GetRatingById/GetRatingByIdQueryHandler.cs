@@ -15,10 +15,11 @@ namespace Restaurants.Application.Ratings.Queries.GetRatingById
         public async Task<RatingDto> Handle(GetRatingByIdQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting rating {RatingId}", request.Id);
-            var customer = await ratingsRepository.GetByIdWithIncluded(request.Id)
+
+            var rating = await ratingsRepository.GetByIdWithIncluded(request.Id)
                     ?? throw new NotFoundException(nameof(Rating), request.Id.ToString());
 
-            var ratingDto = mapper.Map<RatingDto>(customer);
+            var ratingDto = mapper.Map<RatingDto>(rating);
 
             //restaurantDto.LogoSasUrl = blobStorageService.GetBlobSasUrl(restaurant.LogoUrl);
 

@@ -25,6 +25,20 @@ namespace Restaurants.API.MiddleWares
 
                 logger.LogWarning(notFound.Message);
             }
+            catch (NotFoundEmailException notFound)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notFound.Message);
+
+                logger.LogWarning(notFound.Message);
+            }
+            catch (NotFoundPhoneNumberException notFound)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notFound.Message);
+
+                logger.LogWarning(notFound.Message);
+            }
             catch (DuplicateNameException ex)
             {
                 context.Response.StatusCode = 409;

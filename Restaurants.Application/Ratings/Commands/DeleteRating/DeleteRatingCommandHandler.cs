@@ -14,7 +14,7 @@ namespace Restaurants.Application.Ratings.Commands.DeleteRating
             logger.LogInformation("Deleting rating with id: {RatingId}", request.Id);
 
             var rating = await ratingsRepository.GetByIdAsync(request.Id)
-                ?? throw new NotFoundException(nameof(Restaurant), request.Id.ToString());
+                ?? throw new NotFoundException(nameof(Rating), request.Id.ToString());
 
             await ratingsRepository.DeleteAsync(rating);
         }

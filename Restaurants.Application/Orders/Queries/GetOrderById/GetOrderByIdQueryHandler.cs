@@ -15,10 +15,12 @@ namespace Restaurants.Application.Orders.Queries.GetOrderById
         public async Task<OrderDto> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting order {OrderId}", request.Id);
+
             var order = await ordersRepository.GetByIdIncludeWithOrderItemsAsync(request.Id)
                     ?? throw new NotFoundException(nameof(Order), request.Id.ToString());
 
             var orderDto = mapper.Map<OrderDto>(order);
+
             return orderDto;
         }
     }

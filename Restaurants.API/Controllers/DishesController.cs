@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Common;
+using Restaurants.Application.Dishes.Commands.CreateDish;
+using Restaurants.Application.Dishes.Commands.DeleteDish;
+using Restaurants.Application.Dishes.Commands.UpdateDish;
 using Restaurants.Application.Dishes.Dtos;
 using Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant;
 using Restaurants.Application.Dishes.Queries.GetDishByName;
@@ -43,10 +46,41 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpGet("Name{name}")]
-        public async Task<ActionResult<DishDto?>> GetByName([FromRoute] string name)
+        public async Task<ActionResult<DishDto?>> GetByName([FromRoute] int restaurantId, [FromRoute] string name)
         {
-            var dish = await mediator.Send(new GetDishByNameQuery(name));
+            var dish = await mediator.Send(new GetDishByNameQuery(restaurantId, name));
             return Ok(dish);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteDish([FromRoute] int restaurantId, [FromRoute] int id)
+        {
+            await mediator.Send(new DeleteDishCommand(restaurantId, id));
+            return NoContent();
+        }
+
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> UpdateDish([FromRoute] int restaurantId, [FromRoute] int id, [FromBody] UpdateDishCommand command)
+        {
+            command.Id = id;
+            command.RestaurantId = restaurantId;
+
+            await mediator.Send(command);
+            return NoContent();
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[Authorize(Roles = UserRoles.Owner)]
+        public async Task<IActionResult> CreateDish([FromRoute] int restaurantId, [FromBody] CreateDishCommand command)
+        {
+            command.RestaurantId = restaurantId;
+            int id = await mediator.Send(command);
+            return CreatedAtAction(nameof(GetByIdForRestaurant), new { restaurantId, dishId = id }, null);
         }
     }
 }

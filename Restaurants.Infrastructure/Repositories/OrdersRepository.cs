@@ -49,6 +49,7 @@ namespace Restaurants.Infrastructure.Repositories
             var order = await dbContext
                .Orders
                .AsNoTracking()
+               .Include(o => o.Customer)
                .Include(o => o.OrderItems)
                .ThenInclude(o => o.Dish)
                .FirstOrDefaultAsync(o => o.Id == id);

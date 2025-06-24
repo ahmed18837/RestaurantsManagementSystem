@@ -46,5 +46,23 @@ namespace Restaurants.Infrastructure.Repositories
 
             return (customers, totalCount);
         }
+
+        public async Task<Customer?> GetByEmailAsync(string email)
+        {
+            var customer = await dbContext.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Email == email);
+
+            return customer;
+        }
+
+        public async Task<Customer?> GetByPhoneNumberAsync(string phoneNumber)
+        {
+            var customer = await dbContext.Customers
+               .AsNoTracking()
+               .FirstOrDefaultAsync(c => c.PhoneNumber == phoneNumber);
+
+            return customer;
+        }
     }
 }

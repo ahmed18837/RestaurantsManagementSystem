@@ -20,9 +20,7 @@ namespace Restaurants.Application.Customers.Queries.GetCustomerByName
                     ?? throw new NotFoundNameException(nameof(Customer), request.Name);
 
             var customerDto = mapper.Map<CustomerDto>(customer);
-
-            //restaurantDto.LogoSasUrl = blobStorageService.GetBlobSasUrl(restaurant.LogoUrl);
-
+            
             return customerDto;
         }
     }

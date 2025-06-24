@@ -1,9 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.Customers.Commands.CreateCustomer;
+using Restaurants.Application.Customers.Commands.DeleteCustomer;
+using Restaurants.Application.Customers.Commands.UpdateCustomer;
 using Restaurants.Application.Customers.Dtos;
 using Restaurants.Application.Customers.Queries.GetAllCustomers;
+using Restaurants.Application.Customers.Queries.GetCustomerByEmail;
 using Restaurants.Application.Customers.Queries.GetCustomerById;
 using Restaurants.Application.Customers.Queries.GetCustomerByName;
+using Restaurants.Application.Customers.Queries.GetCustomerByPhoneNumber;
 
 namespace Restaurants.API.Controllers
 {
@@ -26,10 +31,54 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpGet("Name{name}")]
-        public async Task<ActionResult<CustomerDto?>> GetByName([FromRoute] string name)
+        public async Task<ActionResult<CustomerDto?>> GetByName([FromRoute] string name = "Ahmed Ali")
         {
             var customer = await mediator.Send(new GetCustomerByNameQuery(name));
             return Ok(customer);
+        }
+
+        [HttpGet("PhoneNumber{phoneNumber}")]
+        public async Task<ActionResult<CustomerDto?>> GetByPhoneNumber([FromRoute] string phoneNumber = "0100000001")
+        {
+            var customer = await mediator.Send(new GetCustomerByPhoneNumberQuery(phoneNumber));
+            return Ok(customer);
+        }
+
+        [HttpGet("Email{email}")]
+        public async Task<ActionResult<CustomerDto?>> GetByEmail([FromRoute] string email = "user@gmail.com")
+        {
+            var customer = await mediator.Send(new GetCustomerByEmailQuery(email));
+            return Ok(customer);
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteCustomer([FromRoute] int id)
+        {
+            await mediator.Send(new DeleteCustomerCommand(id));
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateRating([FromRoute] int id, [FromBody] UpdateCustomerCommand command)
+        {
+            command.Id = id;
+            await mediator.Send(command);
+            return NoContent();
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[Authorize(Roles = UserRoles.Owner)]
+        public async Task<IActionResult> CreateRating([FromBody] CreateCustomerCommand command)
+        {
+            int id = await mediator.Send(command);
+            return CreatedAtAction(nameof(GetById), new { id }, null);
         }
     }
 }

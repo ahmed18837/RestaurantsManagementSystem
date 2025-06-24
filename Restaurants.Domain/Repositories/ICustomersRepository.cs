@@ -7,5 +7,7 @@ namespace Restaurants.Domain.Repositories
     public interface ICustomersRepository : IGenericRepository<Customer>
     {
         Task<(IEnumerable<Customer>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
+        Task<Customer?> GetByEmailAsync(string email);
+        Task<Customer?> GetByPhoneNumberAsync(string phoneNumber);
     }
 }
