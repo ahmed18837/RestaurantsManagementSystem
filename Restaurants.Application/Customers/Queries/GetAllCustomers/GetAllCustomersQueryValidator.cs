@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using Restaurants.Application.Restaurants.Dtos;
+using Restaurants.Application.Customers.Dtos;
 
 namespace Restaurants.Application.Customers.Queries.GetAllCustomers
 {
     public class GetAllCustomersQueryValidator : AbstractValidator<GetAllCustomersQuery>
     {
-        private int[] allowPageSizes = [5, 10, 15, 30];
-        private string[] allowedSortByColumnNames = [nameof(RestaurantDto.Name),
-        nameof(RestaurantDto.Category),
-        nameof(RestaurantDto.Description)];
+        private readonly int[] allowPageSizes = [5, 10, 15, 30];
+        private readonly string[] allowedSortByColumnNames = [nameof(CustomerDto.Email),
+        nameof(CustomerDto.PhoneNumber),
+        nameof(CustomerDto.Name)];
 
 
         public GetAllCustomersQueryValidator()

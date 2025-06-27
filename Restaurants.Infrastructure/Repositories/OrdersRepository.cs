@@ -14,6 +14,7 @@ namespace Restaurants.Infrastructure.Repositories
         {
             var baseQuery = dbContext
                 .Orders
+                .Include(o => o.Customer)
                 .Include(o => o.OrderItems)
                 .ThenInclude(o => o.Dish)
                 .AsNoTracking();
@@ -56,5 +57,6 @@ namespace Restaurants.Infrastructure.Repositories
 
             return order;
         }
+
     }
 }

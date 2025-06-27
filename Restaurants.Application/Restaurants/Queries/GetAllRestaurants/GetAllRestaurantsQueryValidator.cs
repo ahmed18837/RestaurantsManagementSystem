@@ -7,7 +7,8 @@ namespace Restaurants.Application.Restaurants.Queries.GetAllRestaurants
     {
         private int[] allowPageSizes = [5, 10, 15, 30];
         private string[] allowedSortByColumnNames = [nameof(RestaurantDto.Name),
-        nameof(RestaurantDto.Category),
+            nameof(RestaurantDto.ContactNumber),
+            nameof(RestaurantDto.ContactEmail),
         nameof(RestaurantDto.Description)];
 
 

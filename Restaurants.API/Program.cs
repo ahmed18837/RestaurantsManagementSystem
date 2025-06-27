@@ -24,16 +24,15 @@ var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 //app.UseMiddleware<RequestTimeLoggingMiddleware>();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+
 app.UseSwagger();
 app.UseSwaggerUI();
-//}
+
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 

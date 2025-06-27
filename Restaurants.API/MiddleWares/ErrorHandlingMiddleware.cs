@@ -51,13 +51,22 @@ namespace Restaurants.API.MiddleWares
                 context.Response.StatusCode = 403;
                 await context.Response.WriteAsync("Access forbidden");
             }
+            //catch (Exception ex)
+            //{
+            //    logger.LogError(ex, ex.Message);
+
+            //    context.Response.StatusCode = 500;
+            //    await context.Response.WriteAsync("Something went wrong");
+            //}
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
-
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Something went wrong");
+
+                // اطبع الرسالة الحقيقية للخطأ مؤقتًا
+                await context.Response.WriteAsync($"Error: {ex.Message}\n\n{ex.StackTrace}");
             }
+
         }
     }
 }
