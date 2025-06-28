@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Exceptions;
 using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories.GenericRepository;
@@ -64,5 +65,33 @@ namespace Restaurants.Infrastructure.Repositories
 
             return customer;
         }
+
+        public async Task AddFavoriteRestaurantAsync(int customerId, int restaurantId)
+        {
+            var customer = await dbContext.Customers
+                .Include(c => c.FavoriteRestaurants)
+                .FirstOrDefaultAsync(c => c.Id == customerId)
+                ?? throw new NotFoundException(nameof(Customer), customerId.ToString());
+
+            var restaurant = await dbContext.Restaurants.FindAsync(restaurantId)
+                ?? throw new NotFoundException(nameof(Restaurant), restaurantId.ToString());
+
+            if (!customer.FavoriteRestaurants.Any(r => r.Id == restaurantId))
+            {
+                customer.FavoriteRestaurants.Add(restaurant);
+                await dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<List<Restaurant>> GetFavoriteRestaurantsAsync(int customerId)
+        {
+            var customer = await dbContext.Customers
+                .Include(c => c.FavoriteRestaurants)
+                .FirstOrDefaultAsync(c => c.Id == customerId)
+                ?? throw new NotFoundException(nameof(Customer), customerId.ToString());
+
+            return customer.FavoriteRestaurants.ToList();
+        }
+
     }
 }

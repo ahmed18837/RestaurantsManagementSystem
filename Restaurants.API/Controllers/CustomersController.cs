@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.Customers.Commands.AddRestaurantToFavorites;
 using Restaurants.Application.Customers.Commands.CreateCustomer;
 using Restaurants.Application.Customers.Commands.DeleteCustomer;
 using Restaurants.Application.Customers.Commands.UpdateCustomer;
@@ -9,6 +10,10 @@ using Restaurants.Application.Customers.Queries.GetCustomerByEmail;
 using Restaurants.Application.Customers.Queries.GetCustomerById;
 using Restaurants.Application.Customers.Queries.GetCustomerByName;
 using Restaurants.Application.Customers.Queries.GetCustomerByPhoneNumber;
+using Restaurants.Application.Customers.Queries.GetCustomerFavoriteRestaurants;
+using Restaurants.Application.Restaurants.Dtos;
+using Restaurants.Domain.Exceptions;
+using System.Data;
 
 namespace Restaurants.API.Controllers
 {
@@ -79,6 +84,34 @@ namespace Restaurants.API.Controllers
         {
             int id = await mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id }, null);
+        }
+
+        [HttpPost("Favorites")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddFavorite([FromBody] AddRestaurantToFavoritesCommand command)
+        {
+            try
+            {
+                await mediator.Send(command);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            catch (DuplicateNameException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("{id}/Favorites")]
+        public async Task<ActionResult<List<RestaurantDto>>> GetFavorites([FromRoute] int id = 500)
+        {
+            var result = await mediator.Send(new GetCustomerFavoriteRestaurantsQuery(id));
+            return Ok(result);
         }
     }
 }

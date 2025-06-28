@@ -19,6 +19,8 @@ namespace Restaurants.Domain.Entities
 
         public ICollection<Rating> Ratings { get; set; } = [];
         public ICollection<Order> Orders { get; set; } = [];
+        public ICollection<Restaurant> FavoriteRestaurants { get; set; } = [];
+
 
         // ✅ الربط مع جدول الهوية (IdentityUser)
         //[Required]

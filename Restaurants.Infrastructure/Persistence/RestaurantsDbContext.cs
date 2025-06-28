@@ -121,7 +121,12 @@ namespace Restaurants.Infrastructure.Persistence
                    .HasForeignKey(oi => oi.OrderId)
                    .HasForeignKey(oi => oi.OrderId)
                    .OnDelete(DeleteBehavior.Cascade); // حذف الطلب يحذف العناصر
-            ;
+
+            builder.Entity<Customer>()
+            .HasMany(c => c.FavoriteRestaurants)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("CustomerFavoriteRestaurants"));
+
         }
     }
 }
