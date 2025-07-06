@@ -21,7 +21,9 @@ namespace Restaurants.Application.Dishes.Queries.GetDishesForRestaurant
             var restaurant = await restaurantsRepository.GetByIdAsync(request.RestaurantId)
                 ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
 
-            var (dishes, totalCount) = await dishesRepository.GetAllMatchingAsync(request.SearchPhrase,
+            var (dishes, totalCount) = await dishesRepository.GetAllMatchingAsync(
+                request.RestaurantId,
+                request.SearchPhrase,
                request.PageSize,
                request.PageNumber,
                request.SortBy,

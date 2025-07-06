@@ -26,6 +26,7 @@ namespace Restaurants.Infrastructure.Repositories
         //}
 
         public async Task<(IEnumerable<Dish> Dishes, int TotalCount)> GetAllMatchingAsync(
+             int restaurantId,
        string? searchPhrase,
        int pageSize,
        int pageNumber,
@@ -42,6 +43,7 @@ namespace Restaurants.Infrastructure.Repositories
             IQueryable<Dish> query = dbContext.Dishes.AsNoTracking()
                 .Include(d => d.Restaurant)
                 .Include(d => d.Category)
+                .Where(d => d.RestaurantId == restaurantId)
                 .Where(d =>
                     term == null ||
                     EF.Functions.Like(d.Name.ToLower(), $"%{term}%") ||

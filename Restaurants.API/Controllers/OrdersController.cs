@@ -6,6 +6,9 @@ using Restaurants.Application.Orders.Commands.UpdateOrder;
 using Restaurants.Application.Orders.Dtos;
 using Restaurants.Application.Orders.Queries.GetAllOrders;
 using Restaurants.Application.Orders.Queries.GetOrderById;
+using Restaurants.Application.Orders.Queries.GetOrdersByCustomerId;
+using Restaurants.Application.Orders.Queries.GetOrdersByRestaurantId;
+using Restaurants.Domain.Constants;
 
 namespace Restaurants.API.Controllers
 {
@@ -52,6 +55,44 @@ namespace Restaurants.API.Controllers
         {
             await mediator.Send(new DeleteOrderCommand(id));
             return NoContent();
+        }
+
+        [HttpGet("CustomerId")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetByCustomerId([FromQuery] int customerId,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 5,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+        {
+            var query = new GetOrdersByCustomerIdQuery(customerId)
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortDirection = sortDirection
+            };
+
+            var result = await mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("RestaurantId")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetByRestaurantId([FromQuery] int restaurantId,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 5,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+        {
+            var query = new GetOrdersByRestaurantIdQuery(restaurantId)
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortDirection = sortDirection
+            };
+
+            var result = await mediator.Send(query);
+            return Ok(result);
         }
     }
 }

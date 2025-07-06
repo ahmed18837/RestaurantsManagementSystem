@@ -68,10 +68,10 @@ namespace Restaurants.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, null);
         }
 
-        [HttpGet("{restaurantId}/Categories")]
-        public async Task<ActionResult<List<string>>> GetCategoriesForRestaurant([FromRoute] int restaurantId = 400)
+        [HttpGet("{Id}/Categories")]
+        public async Task<ActionResult<List<string>>> GetCategoriesForRestaurant([FromRoute] int Id = 400)
         {
-            var categories = await mediator.Send(new GetCategoriesForRestaurantQuery(restaurantId));
+            var categories = await mediator.Send(new GetCategoriesForRestaurantQuery(Id));
             return Ok(categories);
         }
 
@@ -82,10 +82,10 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{restaurantId}/Statistics")]
-        public async Task<ActionResult<RestaurantStatisticsDto>> GetStatistics([FromRoute] int restaurantId)
+        [HttpGet("{Id}/Statistics")]
+        public async Task<ActionResult<RestaurantStatisticsDto>> GetStatistics([FromRoute] int Id = 400)
         {
-            var result = await mediator.Send(new GetRestaurantStatisticsQuery(restaurantId));
+            var result = await mediator.Send(new GetRestaurantStatisticsQuery(Id));
             return Ok(result);
         }
     }

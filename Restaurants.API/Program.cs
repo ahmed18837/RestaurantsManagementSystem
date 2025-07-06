@@ -5,34 +5,33 @@ using Restaurants.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Add services to the container
 builder.AddPresentation();
-
 builder.Services.AddApplication();
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHttpContextAccessor(); // ?? „„ «“
 
 var app = builder.Build();
 
+// Middlewares
+app.UseRouting(); // ﬁ»· Authentication/Authorization
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
-//app.UseMiddleware<RequestTimeLoggingMiddleware>();
-
+// app.UseMiddleware<RequestTimeLoggingMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-app.UseAuthentication();
+// ? «· — Ì» «·„Â„ Â‰«:
+app.UseAuthentication();    // √Ê·«
+app.UseAuthorization();     // »⁄œÂ
 
 app.MapControllers();
 

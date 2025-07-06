@@ -9,7 +9,8 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
     public class CreateDishCommandHandler(ILogger<CreateDishCommandHandler> logger,
         IDishesRepository dishesRepository,
         ICategoriesRepository categoriesRepository,
-        IRestaurantsRepository restaurantsRepository) : IRequestHandler<CreateDishCommand, int>
+        IRestaurantsRepository restaurantsRepository,
+        IFileRepository fileRepository) : IRequestHandler<CreateDishCommand, int>
     {
         public async Task<int> Handle(CreateDishCommand request, CancellationToken cancellationToken)
         {
@@ -26,7 +27,7 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
                 Name = request.Name,
                 Description = request.Description,
                 Price = request.Price,
-                ImageFileName = request.ImageFileName,
+                ImageFileName = request.Image != null ? fileRepository.SaveFile(request.Image, nameof(Dish)) : null,
                 RestaurantId = request.RestaurantId,
                 CategoryId = existCategory!.Id
             };

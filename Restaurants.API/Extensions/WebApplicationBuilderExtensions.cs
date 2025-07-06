@@ -11,6 +11,8 @@ namespace Restaurants.API.Extensions
 
             builder.Services.AddControllers();
 
+            builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddSwaggerGen(c =>
             {       // To Show Authorize Button
                 c.AddSecurityDefinition("bearerAuthorization", new OpenApiSecurityScheme

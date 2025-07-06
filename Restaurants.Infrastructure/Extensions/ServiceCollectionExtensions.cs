@@ -25,8 +25,12 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddScoped<ICustomersRepository, CustomersRepository>();
             services.AddScoped<IOrdersRepository, OrdersRepository>();
             services.AddScoped<IRatingsRepository, RatingsRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IEmailRepository, EmailRepository>();
 
             //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddHttpContextAccessor();
 
         }
     }

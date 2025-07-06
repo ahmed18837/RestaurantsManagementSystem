@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -18,7 +19,7 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
         [DefaultValue(20.5)]
         public decimal Price { get; set; }
 
-        public string? ImageFileName { get; set; }
+        public IFormFile? Image { get; set; }
 
         [DefaultValue("Pasta")]
         public string CategoryName { get; set; } = default!;

@@ -5,6 +5,7 @@ using Restaurants.Application.Dishes.Commands.CreateDish;
 using Restaurants.Application.Dishes.Commands.DeleteDish;
 using Restaurants.Application.Dishes.Commands.UpdateDish;
 using Restaurants.Application.Dishes.Dtos;
+using Restaurants.Application.Dishes.Queries.GetDishByCategoryIdForRestaurant;
 using Restaurants.Application.Dishes.Queries.GetDishByIdForRestaurant;
 using Restaurants.Application.Dishes.Queries.GetDishByName;
 using Restaurants.Application.Dishes.Queries.GetDishesForRestaurant;
@@ -38,10 +39,10 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{dishId:int}")]
-        public async Task<ActionResult<DishDto>> GetByIdForRestaurant([FromRoute] int restaurantId, [FromRoute] int dishId)
+        [HttpGet("{Id:int}")]
+        public async Task<ActionResult<DishDto>> GetByIdForRestaurant([FromRoute] int restaurantId, [FromRoute] int Id)
         {
-            var dish = await mediator.Send(new GetDishByIdForRestaurantQuery(restaurantId, dishId));
+            var dish = await mediator.Send(new GetDishByIdForRestaurantQuery(restaurantId, Id));
             return Ok(dish);
         }
 
@@ -76,11 +77,32 @@ namespace Restaurants.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         //[Authorize(Roles = UserRoles.Owner)]
-        public async Task<IActionResult> CreateDish([FromRoute] int restaurantId, [FromBody] CreateDishCommand command)
+        public async Task<IActionResult> CreateDish([FromRoute] int restaurantId, [FromForm] CreateDishCommand command)
         {
             command.RestaurantId = restaurantId;
             int id = await mediator.Send(command);
-            return CreatedAtAction(nameof(GetByIdForRestaurant), new { restaurantId, dishId = id }, null);
+            return CreatedAtAction(nameof(GetByIdForRestaurant), new { restaurantId, Id = id }, null);
+        }
+
+        [HttpGet("CategoryId")]
+        public async Task<ActionResult<DishDto>> GetByCategoryIdForRestaurant([FromRoute] int restaurantId, [FromQuery] int categoryId,
+        [FromQuery] string? searchPhrase = null,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 5,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] SortDirection sortDirection = SortDirection.Ascending)
+        {
+            var query = new GetDishesByCategoryIdForRestaurantQuery(restaurantId, categoryId)
+            {
+                SearchPhrase = searchPhrase,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                SortBy = sortBy,
+                SortDirection = sortDirection
+            };
+
+            var result = await mediator.Send(query);
+            return Ok(result);
         }
     }
 }
