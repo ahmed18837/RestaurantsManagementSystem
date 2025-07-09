@@ -1,5 +1,10 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Restaurants.API.MiddleWares;
+using Restaurants.Domain.Constants;
+using System.Text;
 
 namespace Restaurants.API.Extensions
 {
@@ -12,6 +17,8 @@ namespace Restaurants.API.Extensions
             builder.Services.AddControllers();
 
             builder.Services.AddHttpContextAccessor();
+
+            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
             builder.Services.AddSwaggerGen(c =>
             {       // To Show Authorize Button
@@ -37,6 +44,38 @@ namespace Restaurants.API.Extensions
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey
+                        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
+
             //builder.Services.AddScoped<RequestTimeLoggingMiddleware>();
 
             //builder.Host.UseSerilog((context, configuration) =>

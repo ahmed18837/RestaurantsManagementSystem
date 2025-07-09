@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restaurants.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Restaurants.Infrastructure.Persistence;
 namespace Restaurants.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantsDbContext))]
-    partial class RestaurantsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250708132429_AddingRelashinBetweenIdentityUserAndCustomer")]
+    partial class AddingRelashinBetweenIdentityUserAndCustomer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,114 +177,6 @@ namespace Restaurants.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Restaurants.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateOnly?>("DateOfBirth")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("FailedTwoFactorAttempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("LastTwoFactorAttempt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LockoutEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ResetCode")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TwoFactorAttempts")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TwoFactorCode")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<DateTime?>("TwoFactorCodeExpiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("TwoFactorSentAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId")
-                        .IsUnique()
-                        .HasFilter("[CustomerId] IS NOT NULL");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
             modelBuilder.Entity("Restaurants.Domain.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -310,10 +205,6 @@ namespace Restaurants.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("NEXT VALUE FOR dbo.CommonSequence");
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -328,6 +219,10 @@ namespace Restaurants.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -498,6 +393,84 @@ namespace Restaurants.Infrastructure.Migrations
                     b.ToTable("Restaurants");
                 });
 
+            modelBuilder.Entity("Restaurants.Domain.Entities.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Nationality")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique()
+                        .HasFilter("[CustomerId] IS NOT NULL");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("CustomerRestaurant", b =>
                 {
                     b.HasOne("Restaurants.Domain.Entities.Customer", null)
@@ -524,7 +497,7 @@ namespace Restaurants.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Restaurants.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Restaurants.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -533,7 +506,7 @@ namespace Restaurants.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Restaurants.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Restaurants.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -548,7 +521,7 @@ namespace Restaurants.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Restaurants.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Restaurants.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -557,55 +530,11 @@ namespace Restaurants.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Restaurants.Domain.Entities.ApplicationUser", null)
+                    b.HasOne("Restaurants.Domain.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Restaurants.Domain.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("Restaurants.Domain.Entities.Customer", "Customer")
-                        .WithOne("User")
-                        .HasForeignKey("Restaurants.Domain.Entities.ApplicationUser", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.OwnsMany("Restaurants.Domain.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<string>("ApplicationUserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpiresOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime?>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("ApplicationUserId", "Id");
-
-                            b1.ToTable("RefreshToken");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ApplicationUserId");
-                        });
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("RefreshTokens");
                 });
 
             modelBuilder.Entity("Restaurants.Domain.Entities.Dish", b =>
@@ -716,6 +645,16 @@ namespace Restaurants.Infrastructure.Migrations
                         });
 
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("Restaurants.Domain.Entities.User", b =>
+                {
+                    b.HasOne("Restaurants.Domain.Entities.Customer", "Customer")
+                        .WithOne("User")
+                        .HasForeignKey("Restaurants.Domain.Entities.User", "CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("Restaurants.Domain.Entities.Category", b =>

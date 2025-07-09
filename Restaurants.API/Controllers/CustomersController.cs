@@ -80,7 +80,7 @@ namespace Restaurants.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         //[Authorize(Roles = UserRoles.Owner)]
-        public async Task<IActionResult> CreateRating([FromBody] CreateCustomerCommand command)
+        public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
         {
             int id = await mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id }, null);

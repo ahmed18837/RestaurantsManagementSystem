@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurants.Domain.Entities;
 using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
+using Restaurants.Infrastructure.Seeders;
 
 namespace Restaurants.Infrastructure.Extensions
 {
@@ -19,6 +22,11 @@ namespace Restaurants.Infrastructure.Extensions
 
             services.AddDbContext<RestaurantsDbContext>();
 
+            services.AddIdentityApiEndpoints<ApplicationUser>()
+               .AddRoles<IdentityRole>() // To Support the role claim in access token
+                                         //.AddClaimsPrincipalFactory<RestaurantsUserClaimsPrincipalFactory>() // To Add More Attributes In Token
+               .AddEntityFrameworkStores<RestaurantsDbContext>();
+
             services.AddScoped<IRestaurantsRepository, RestaurantsRepository>();
             services.AddScoped<IDishesRepository, DishesRepository>();
             services.AddScoped<ICategoriesRepository, CategoriesRepository>();
@@ -27,8 +35,7 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddScoped<IRatingsRepository, RatingsRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();
-
-            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IRoleSeeder, RoleSeeder>();
 
             services.AddHttpContextAccessor();
 

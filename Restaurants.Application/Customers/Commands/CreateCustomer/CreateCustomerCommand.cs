@@ -13,5 +13,8 @@ namespace Restaurants.Application.Customers.Commands.CreateCustomer
 
         [DefaultValue("01234567891")]
         public string PhoneNumber { get; set; } = default!;
+
+        [DefaultValue("12345678Aa@")]
+        public string Password { get; set; } = default!;
     }
 }

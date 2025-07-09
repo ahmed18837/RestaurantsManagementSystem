@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Restaurants.Domain.Entities;
 
 namespace Restaurants.Infrastructure.Persistence
 {
-    public class RestaurantsDbContext(DbContextOptions<RestaurantsDbContext> options) : DbContext(options)
+    public class RestaurantsDbContext(DbContextOptions<RestaurantsDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Restaurant> Restaurants { get; set; } = default!;
         public DbSet<Dish> Dishes { get; set; } = default!;
@@ -127,6 +128,11 @@ namespace Restaurants.Infrastructure.Persistence
             .WithMany()
             .UsingEntity(j => j.ToTable("CustomerFavoriteRestaurants"));
 
+            builder.Entity<Customer>()
+              .HasOne(s => s.User)
+              .WithOne(u => u.Customer)
+              .HasForeignKey<ApplicationUser>(u => u.CustomerId)
+              .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
