@@ -1,6 +1,6 @@
-﻿namespace Restaurants.Domain.Repositories
+﻿namespace Restaurants.Application.Interfaces.Services
 {
-    public interface IEmailRepository
+    public interface IEmailService
     {
         Task<bool> SendEmailAsync(string toEmail, string subject, string body);
     }

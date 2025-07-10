@@ -18,6 +18,13 @@ namespace Restaurants.API.MiddleWares
 
                 logger.LogWarning(notFound.Message);
             }
+            catch (BadRequestException badException)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync(badException.Message);
+
+                logger.LogWarning(badException.Message);
+            }
             catch (NotFoundNameException notFound)
             {
                 context.Response.StatusCode = 404;

@@ -2,11 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Restaurants.Application.Interfaces.Services;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seeders;
+using Restaurants.Infrastructure.Services;
 
 namespace Restaurants.Infrastructure.Extensions
 {
@@ -33,8 +35,9 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddScoped<ICustomersRepository, CustomersRepository>();
             services.AddScoped<IOrdersRepository, OrdersRepository>();
             services.AddScoped<IRatingsRepository, RatingsRepository>();
-            services.AddScoped<IFileRepository, FileRepository>();
-            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRoleSeeder, RoleSeeder>();
 
             services.AddHttpContextAccessor();

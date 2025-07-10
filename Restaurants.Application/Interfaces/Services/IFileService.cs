@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Restaurants.Domain.Repositories
+namespace Restaurants.Application.Interfaces.Services
 {
-    public interface IFileRepository
+    public interface IFileService
     {
         string SaveFile(IFormFile? file, string category);
         Task DeleteFileAsync(string relativePath);

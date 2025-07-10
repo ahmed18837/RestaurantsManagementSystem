@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Restaurants.Domain.Repositories;
+using Restaurants.Application.Interfaces.Services;
 
-namespace Restaurants.Infrastructure.Repositories
+namespace Restaurants.Infrastructure.Services
 {
-    public class FileRepository : IFileRepository
+    public class FileService : IFileService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _baseUploadPath;
         private readonly string _webRootPath;
 
-        public FileRepository(IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
+        public FileService(IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _webRootPath = environment.WebRootPath ?? Path.Combine(environment.ContentRootPath, "wwwroot");

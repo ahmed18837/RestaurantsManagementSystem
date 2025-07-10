@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurants.Application.Interfaces.Services;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Exceptions;
 using Restaurants.Domain.Repositories;
@@ -10,7 +11,7 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
         IDishesRepository dishesRepository,
         ICategoriesRepository categoriesRepository,
         IRestaurantsRepository restaurantsRepository,
-        IFileRepository fileRepository) : IRequestHandler<CreateDishCommand, int>
+        IFileService fileService) : IRequestHandler<CreateDishCommand, int>
     {
         public async Task<int> Handle(CreateDishCommand request, CancellationToken cancellationToken)
         {
@@ -27,7 +28,7 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
                 Name = request.Name,
                 Description = request.Description,
                 Price = request.Price,
-                ImageFileName = request.Image != null ? fileRepository.SaveFile(request.Image, nameof(Dish)) : null,
+                ImageFileName = request.Image != null ? fileService.SaveFile(request.Image, nameof(Dish)) : null,
                 RestaurantId = request.RestaurantId,
                 CategoryId = existCategory!.Id
             };

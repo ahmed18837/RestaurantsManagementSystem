@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Restaurants.Domain.Repositories;
+using Restaurants.Application.Interfaces.Services;
 using System.Net;
 using System.Net.Mail;
 
-namespace Restaurants.Infrastructure.Repositories
+namespace Restaurants.Infrastructure.Services
 {
-    public class EmailRepository(IConfiguration configuration) : IEmailRepository
+    public class EmailService(IConfiguration configuration) : IEmailService
     {
         private readonly IConfiguration _configuration = configuration;
 

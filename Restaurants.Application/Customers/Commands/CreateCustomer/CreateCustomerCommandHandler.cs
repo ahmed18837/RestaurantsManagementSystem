@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Restaurants.Application.Interfaces.Services;
 using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 
@@ -13,7 +14,7 @@ namespace Restaurants.Application.Customers.Commands.CreateCustomer
     public class CreateCustomerCommandHandler(ILogger<CreateCustomerCommandHandler> logger,
         IMapper mapper, ICustomersRepository customersRepository,
          UserManager<ApplicationUser> userManager,
-          IEmailRepository emailRepository) : IRequestHandler<CreateCustomerCommand, int>
+          IEmailService emailService) : IRequestHandler<CreateCustomerCommand, int>
     {
         public async Task<int> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
         {
@@ -103,7 +104,7 @@ namespace Restaurants.Application.Customers.Commands.CreateCustomer
 
             try
             {
-                await emailRepository.SendEmailAsync(customer.Email, subject, body);
+                await emailService.SendEmailAsync(customer.Email, subject, body);
             }
             catch (Exception ex)
             {

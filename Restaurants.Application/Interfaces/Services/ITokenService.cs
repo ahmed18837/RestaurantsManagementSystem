@@ -7,5 +7,6 @@ namespace Restaurants.Application.Interfaces.Services
     {
         Task<JwtSecurityToken> CreateTokenAsync(ApplicationUser user);
         RefreshToken GenerateRefreshToken();
+        public string GenerateCode();
     }
 }
