@@ -14,8 +14,6 @@ namespace Restaurants.Application.Customers.Commands.UpdateCustomer
     {
         public async Task Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Updating customer with ID: {CustomerId}", request.Id);
-
             var customer = await customersRepository.GetByIdAsync(request.Id)
                              ?? throw new NotFoundException(nameof(Customer), request.Id.ToString());
 
@@ -33,6 +31,8 @@ namespace Restaurants.Application.Customers.Commands.UpdateCustomer
 
             mapper.Map(request, customer);
             await customersRepository.SaveChanges();
+
+            logger.LogInformation("Updating customer with ID: {CustomerId}", request.Id);
         }
     }
 
