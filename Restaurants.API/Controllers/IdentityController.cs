@@ -1,12 +1,15 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Restaurants.Application.User.Commands.AddRole;
 using Restaurants.Application.User.Commands.AssignRoleToUser;
 using Restaurants.Application.User.Commands.ChangePassword;
+using Restaurants.Application.User.Commands.DeleteUser;
 using Restaurants.Application.User.Commands.DisableRefreshToken;
 using Restaurants.Application.User.Commands.ForgetPassword;
 using Restaurants.Application.User.Commands.LoginUser;
 using Restaurants.Application.User.Commands.RefreshToken;
 using Restaurants.Application.User.Commands.RegisterUser;
+using Restaurants.Application.User.Commands.RemoveUserFromRole;
 using Restaurants.Application.User.Commands.Resend2FACode;
 using Restaurants.Application.User.Commands.ResetPassword;
 using Restaurants.Application.User.Commands.Send2FACode;
@@ -25,7 +28,8 @@ using Restaurants.Domain.Constants;
 
 namespace Restaurants.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class IdentityController(IMediator mediator) : ControllerBase
     {
@@ -101,6 +105,14 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("AddRole")]
+        public async Task<IActionResult> AddRole([FromBody] AddRoleCommand command)
+        {
+            await mediator.Send(command);
+
+            return NoContent();
+        }
+
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
         {
@@ -156,6 +168,21 @@ namespace Restaurants.API.Controllers
             var result = await mediator.Send(command);
 
             return Ok(result);
+        }
+
+        [HttpDelete("UserFromRole")]
+        public async Task<IActionResult> DeleteUserFromRole([FromBody] RemoveUserFromRoleCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteUserFromRole([FromRoute] string Id)
+        {
+            await mediator.Send(new DeleteUserCommand(Id));
+            return NoContent();
         }
 
         [HttpPatch("{id}")]

@@ -13,7 +13,9 @@ using Restaurants.Domain.Constants;
 
 namespace Restaurants.API.Controllers
 {
-    [Route("api/restaurants/{restaurantId:int}/[controller]")]
+    [ApiVersion("2.0")]
+    [Route("api/restaurants/{restaurantId:int}/v{version:apiVersion}/[controller]")]
+    //[Route("api/restaurants/{restaurantId:int}/[controller]")]
     [ApiController]
     public class DishesController(IMediator mediator) : ControllerBase
     {

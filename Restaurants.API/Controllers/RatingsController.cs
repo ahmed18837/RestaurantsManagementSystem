@@ -9,7 +9,8 @@ using Restaurants.Application.Ratings.Queries.GetRatingById;
 
 namespace Restaurants.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class RatingsController(IMediator mediator) : ControllerBase
     {

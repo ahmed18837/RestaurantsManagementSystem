@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Restaurants.API.Extensions;
 using Restaurants.API.MiddleWares;
 using Restaurants.Application.Extensions;
@@ -6,35 +7,41 @@ using Restaurants.Infrastructure.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-builder.AddPresentation();
+// ===== Services =====
+builder.AddPresentation();                     // ? םÍזל Controllers + Swagger + Versioning
 builder.Services.AddApplication();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-var scope = app.Services.CreateScope();
-var seeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
+// ===== Seed roles =====
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IRoleSeeder>();
+    await seeder.Seed();
+}
 
-await seeder.Seed();
-
+// ===== Middleware pipeline =====
 app.UseRouting();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 // app.UseMiddleware<RequestTimeLoggingMiddleware>();
 
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint(
+            $"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant());
+    }
+});
 
 app.UseStaticFiles();
-
 app.UseHttpsRedirection();
-
-//app.MapIdentityApi<User>();
 
 app.UseAuthentication();
 app.UseAuthorization();

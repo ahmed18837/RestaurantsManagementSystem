@@ -10,7 +10,8 @@ using Restaurants.Application.Categories.Queries.GetCategoryByName;
 
 namespace Restaurants.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class CategoriesController(IMediator mediator) : ControllerBase
     {

@@ -13,7 +13,8 @@ using Restaurants.Application.Restaurants.Queries.GetTopRatedRestaurants;
 
 namespace Restaurants.API.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("3.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class RestaurantsController(IMediator mediator) : ControllerBase
     {
