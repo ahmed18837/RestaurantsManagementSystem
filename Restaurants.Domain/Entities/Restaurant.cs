@@ -20,6 +20,9 @@ namespace Restaurants.Domain.Entities
         [Phone, MaxLength(15)]
         public string? ContactNumber { get; set; }
 
+        public ApplicationUser? Owner { get; set; } = default!;
+        public string? OwnerId { get; set; } = default!;
+
         // Owned Entity
         public Address? Address { get; set; }
 

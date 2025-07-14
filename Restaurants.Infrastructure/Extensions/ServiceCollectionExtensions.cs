@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurants.Application.Interfaces.Services;
+using Restaurants.Application.User;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Interfaces;
 using Restaurants.Domain.Repositories;
 using Restaurants.Infrastructure.Persistence;
 using Restaurants.Infrastructure.Repositories;
 using Restaurants.Infrastructure.Seeders;
 using Restaurants.Infrastructure.Services;
+using Restaurants.Infrastructure.Services.Authorize;
 
 namespace Restaurants.Infrastructure.Extensions
 {
@@ -39,6 +42,11 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IRoleSeeder, RoleSeeder>();
+            services.AddScoped<IUserContext, UserContext>();
+            services.AddScoped<IRestaurantAuthorizationService, RestaurantAuthorizationService>();
+            services.AddScoped<IRatingAuthorizationService, RatingAuthorizationService>();
+            services.AddScoped<IDishAuthorizationService, DishAuthorizationService>();
+
 
             services.AddHttpContextAccessor();
 

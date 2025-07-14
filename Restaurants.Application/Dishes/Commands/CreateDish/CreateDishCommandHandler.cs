@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using Restaurants.Application.Interfaces.Services;
+using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Exceptions;
+using Restaurants.Domain.Interfaces;
 using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.Dishes.Commands.CreateDish
@@ -11,6 +13,7 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
         IDishesRepository dishesRepository,
         ICategoriesRepository categoriesRepository,
         IRestaurantsRepository restaurantsRepository,
+        IDishAuthorizationService dishAuthorizationService,
         IFileService fileService) : IRequestHandler<CreateDishCommand, int>
     {
         public async Task<int> Handle(CreateDishCommand request, CancellationToken cancellationToken)
@@ -22,6 +25,9 @@ namespace Restaurants.Application.Dishes.Commands.CreateDish
 
             var existRestaurant = await restaurantsRepository.GetByIdAsync(request.RestaurantId)
                  ?? throw new NotFoundException(nameof(Restaurant), request.RestaurantId.ToString());
+
+            if (!dishAuthorizationService.Authorize(existRestaurant, ResourceOperation.Create))
+                throw new ForbidException();
 
             var dish = new Dish
             {

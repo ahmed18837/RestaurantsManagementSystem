@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Ratings.Commands.CreateRating;
 using Restaurants.Application.Ratings.Commands.DeleteRating;
@@ -12,6 +13,7 @@ namespace Restaurants.API.Controllers
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class RatingsController(IMediator mediator) : ControllerBase
     {
 

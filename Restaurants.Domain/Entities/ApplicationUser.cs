@@ -9,8 +9,6 @@ namespace Restaurants.Domain.Entities
         [MaxLength(50)]
         public string FullName { get; set; } = default!;
 
-        public DateOnly? DateOfBirth { get; set; }
-
         [MaxLength(50)]
         public string UserType { get; set; } = default!;
 
@@ -31,11 +29,11 @@ namespace Restaurants.Domain.Entities
 
         // 🔹 جديد: محاولات الفشل وقفل الحساب
         public int FailedTwoFactorAttempts { get; set; } = 0;
-        public DateTime? LockoutEnd { get; set; } // متى ينتهي القفل؟
+        //public DateTime? LockoutEnd { get; set; } // متى ينتهي القفل؟
 
-        public List<RefreshToken> RefreshTokens { get; set; } = new();
+        public List<RefreshToken> RefreshTokens { get; set; } = [];
 
-        //public List<Restaurant> OwnedRestaurants { get; set; } = [];
+        public List<Restaurant> OwnedRestaurants { get; set; } = [];
 
         //migrationBuilder.Sql("UPDATE Restaurants " +
         //        "SET OwnerId = (SELECT TOP 1 Id FROM AspNetUsers)");
