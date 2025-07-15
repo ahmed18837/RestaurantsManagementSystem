@@ -53,8 +53,8 @@ namespace Restaurants.Infrastructure.Services.Authorize
             if (user!.IsInRole(UserRoles.Admin))
                 return true;
 
-            if ((operation == ResourceOperation.Update || operation == ResourceOperation.Delete) &&
-               dish.Restaurant.OwnerId == user.Id)
+            if ((operation == ResourceOperation.Update || operation == ResourceOperation.Delete)
+                && dish.Restaurant.OwnerId == user.Id)
                 return true;
 
             logger.LogWarning("Authorization failed");

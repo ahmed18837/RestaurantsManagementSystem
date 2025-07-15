@@ -25,18 +25,25 @@ namespace Restaurants.Infrastructure.Services
             foreach (var role in roles)
                 roleClaims.Add(new Claim(ClaimTypes.Role, role));
 
-            var claims = new[]
+            // ✅ إضافة CustomerId كـ Claim لو موجود
+            var customClaims = new List<Claim>
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+        new Claim(ClaimTypes.NameIdentifier, user.Id)
+    };
+
+            if (user.CustomerId.HasValue)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
-    }
-            .Union(userClaims)
-            .Union(roleClaims);
+                customClaims.Add(new Claim("CustomerId", user.CustomerId.Value.ToString()));
+            }
+
+            var claims = customClaims
+                .Union(userClaims)
+                .Union(roleClaims);
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key));
-
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
@@ -48,6 +55,7 @@ namespace Restaurants.Infrastructure.Services
 
             return jwtSecurityToken;
         }
+
 
         public RefreshToken GenerateRefreshToken()
         {

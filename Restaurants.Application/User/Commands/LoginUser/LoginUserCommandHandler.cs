@@ -6,6 +6,7 @@ using Restaurants.Application.Interfaces.Services;
 using Restaurants.Application.User.Dtos;
 using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Restaurants.Application.User.Commands.LoginUser
@@ -24,15 +25,15 @@ namespace Restaurants.Application.User.Commands.LoginUser
             var authModel = new ResponseDto();
 
             var user = await userManager.FindByEmailAsync(request.Email) ??
-                throw new Exception("UserName or Password is incorrect");
+                throw new BadRequestException("UserName or Password is incorrect");
 
             var isValidPassword = await userManager.CheckPasswordAsync(user, request.Password);
             if (!isValidPassword)
-                throw new Exception("UserName or Password is incorrect");
+                throw new BadRequestException("UserName or Password is incorrect");
 
             var roles = await userManager.GetRolesAsync(user);
             if (roles == null || roles.Count == 0)
-                throw new Exception("User has no assigned roles");
+                throw new BadRequestException("User has no assigned roles");
 
             var token = await tokenService.CreateTokenAsync(user);
             string encodedToken = new JwtSecurityTokenHandler().WriteToken(token);

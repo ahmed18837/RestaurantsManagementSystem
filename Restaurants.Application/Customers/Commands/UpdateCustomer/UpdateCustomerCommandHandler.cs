@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Restaurants.Domain.Constants;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Exceptions;
+using Restaurants.Domain.Interfaces;
 using Restaurants.Domain.Repositories;
 using System.Data;
 
@@ -10,6 +12,7 @@ namespace Restaurants.Application.Customers.Commands.UpdateCustomer
 {
     public class UpdateCustomerCommandHandler(ILogger<UpdateCustomerCommandHandler> logger,
     ICustomersRepository customersRepository,
+    ICustomerAuthorizationService customerAuthorizationService,
     IMapper mapper) : IRequestHandler<UpdateCustomerCommand>
     {
         public async Task Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
@@ -28,6 +31,9 @@ namespace Restaurants.Application.Customers.Commands.UpdateCustomer
             {
                 throw new DuplicateNameException($"This phone number ({request.PhoneNumber}) is already used by another customer.");
             }
+
+            if (!customerAuthorizationService.Authorize(customer, ResourceOperation.Update))
+                throw new ForbidException();
 
             mapper.Map(request, customer);
             await customersRepository.SaveChanges();

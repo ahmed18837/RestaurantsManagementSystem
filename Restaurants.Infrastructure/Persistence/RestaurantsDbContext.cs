@@ -134,13 +134,12 @@ namespace Restaurants.Infrastructure.Persistence
               .HasForeignKey<ApplicationUser>(u => u.CustomerId)
               .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Restaurant>(entity =>
-            {
-                entity.HasOne(r => r.Owner)
-                      .WithMany(u => u.OwnedRestaurants)
-                      .HasForeignKey(r => r.OwnerId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
+            builder.Entity<Restaurant>()
+           .HasOne(r => r.Owner)
+              .WithMany(u => u.OwnedRestaurants)
+              .HasForeignKey(r => r.OwnerId)
+              .OnDelete(DeleteBehavior.SetNull);
+
 
         }
     }

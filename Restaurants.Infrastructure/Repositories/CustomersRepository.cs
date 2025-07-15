@@ -90,7 +90,14 @@ namespace Restaurants.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.Id == customerId)
                 ?? throw new NotFoundException(nameof(Customer), customerId.ToString());
 
-            return customer.FavoriteRestaurants.ToList();
+            return [.. customer.FavoriteRestaurants];
+        }
+
+        public async Task<Customer?> GetByIdWithFavoritesAsync(int id, CancellationToken ct = default)
+        {
+            return await dbContext.Customers
+                                 .Include(c => c.FavoriteRestaurants)
+                                 .FirstOrDefaultAsync(c => c.Id == id, ct);
         }
 
     }

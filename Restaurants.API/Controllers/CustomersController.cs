@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Customers.Commands.AddRestaurantToFavorites;
 using Restaurants.Application.Customers.Commands.CreateCustomer;
@@ -20,6 +21,7 @@ namespace Restaurants.API.Controllers
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class CustomersController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
@@ -80,14 +82,14 @@ namespace Restaurants.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[Authorize(Roles = UserRoles.Owner)]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateCustomer([FromBody] CreateCustomerCommand command)
         {
             int id = await mediator.Send(command);
             return CreatedAtAction(nameof(GetById), new { id }, null);
         }
 
-        [HttpPost("Favorites")]
+        [HttpPost("AddRestaurantToFavorite")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -108,10 +110,10 @@ namespace Restaurants.API.Controllers
             }
         }
 
-        [HttpGet("{id}/Favorites")]
-        public async Task<ActionResult<List<RestaurantDto>>> GetFavorites([FromRoute] int id = 500)
+        [HttpGet("Favorites")]
+        public async Task<ActionResult<List<RestaurantDto>>> GetFavorites()
         {
-            var result = await mediator.Send(new GetCustomerFavoriteRestaurantsQuery(id));
+            var result = await mediator.Send(new GetCustomerFavoriteRestaurantsQuery());
             return Ok(result);
         }
     }

@@ -12,8 +12,8 @@ using Restaurants.Infrastructure.Persistence;
 namespace Restaurants.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantsDbContext))]
-    [Migration("20250714200910_AddOwnedRestaurantsListToAppUser")]
-    partial class AddOwnedRestaurantsListToAppUser
+    [Migration("20250715150418_AddOwnerIdToRestaurant")]
+    partial class AddOwnerIdToRestaurant
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,8 +213,8 @@ namespace Restaurants.Infrastructure.Migrations
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LockoutEnd")
-                        .HasColumnType("datetime2");
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -698,7 +698,7 @@ namespace Restaurants.Infrastructure.Migrations
                     b.HasOne("Restaurants.Domain.Entities.ApplicationUser", "Owner")
                         .WithMany("OwnedRestaurants")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("Restaurants.Domain.Entities.Address", "Address", b1 =>
                         {

@@ -5,7 +5,7 @@
 namespace Restaurants.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddOwnedRestaurantsListToAppUser : Migration
+    public partial class AddOwnerIdToRestaurant : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

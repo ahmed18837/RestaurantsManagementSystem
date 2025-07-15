@@ -11,6 +11,7 @@ namespace Restaurants.Domain.Repositories
         Task<Customer?> GetByPhoneNumberAsync(string phoneNumber);
         Task AddFavoriteRestaurantAsync(int customerId, int restaurantId);
         Task<List<Restaurant>> GetFavoriteRestaurantsAsync(int customerId);
+        Task<Customer?> GetByIdWithFavoritesAsync(int id, CancellationToken ct = default);
 
     }
 }

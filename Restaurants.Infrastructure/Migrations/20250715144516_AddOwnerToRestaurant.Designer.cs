@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restaurants.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Restaurants.Infrastructure.Persistence;
 namespace Restaurants.Infrastructure.Migrations
 {
     [DbContext(typeof(RestaurantsDbContext))]
-    partial class RestaurantsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250715144516_AddOwnerToRestaurant")]
+    partial class AddOwnerToRestaurant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -695,7 +698,7 @@ namespace Restaurants.Infrastructure.Migrations
                     b.HasOne("Restaurants.Domain.Entities.ApplicationUser", "Owner")
                         .WithMany("OwnedRestaurants")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.OwnsOne("Restaurants.Domain.Entities.Address", "Address", b1 =>
                         {

@@ -34,6 +34,7 @@ namespace Restaurants.Application.Customers.Commands.CreateCustomer
 
             var user = new ApplicationUser
             {
+                FullName = request.Name,
                 UserName = request.Email,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,

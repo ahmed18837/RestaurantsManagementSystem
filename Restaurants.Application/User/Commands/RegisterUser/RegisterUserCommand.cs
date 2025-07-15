@@ -12,7 +12,7 @@ namespace Restaurants.Application.User.Commands.RegisterUser
         [DefaultValue("user@gmail.com")]
         public string Email { get; set; } = default!;
 
-        [DefaultValue("+201234567890")]
+        [DefaultValue("01234567891")]
         public string PhoneNumber { get; set; } = default!;
 
         [DefaultValue("Admin")]
