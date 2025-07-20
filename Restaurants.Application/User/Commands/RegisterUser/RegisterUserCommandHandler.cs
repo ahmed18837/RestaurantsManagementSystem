@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Restaurants.Domain.Entities;
+using Restaurants.Domain.Exceptions;
 
 namespace Restaurants.Application.User.Commands.RegisterUser
 {
@@ -16,7 +17,7 @@ namespace Restaurants.Application.User.Commands.RegisterUser
 
             var existingUser = await userManager.FindByEmailAsync(request.Email);
             if (existingUser != null)
-                throw new Exception("A user with this email already exists");
+                throw new BadRequestException("A user with this email already exists");
 
             var appUser = mapper.Map<ApplicationUser>(request);
 
@@ -24,14 +25,14 @@ namespace Restaurants.Application.User.Commands.RegisterUser
             if (!identityResult.Succeeded)
             {
                 var errors = string.Join(", ", identityResult.Errors.Select(e => e.Description));
-                throw new Exception($"User creation failed: {errors}");
+                throw new BadRequestException($"User creation failed: {errors}");
             }
 
             identityResult = await userManager.AddToRoleAsync(appUser, request.UserType);
             if (!identityResult.Succeeded)
             {
                 var errors = string.Join(", ", identityResult.Errors.Select(e => e.Description));
-                throw new Exception($"Failed to assign the role 'User': {errors}");
+                throw new BadRequestException($"Failed to assign the role 'User': {errors}");
             }
 
             return identityResult;

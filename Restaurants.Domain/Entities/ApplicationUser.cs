@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Restaurants.Domain.Entities
 {
@@ -13,7 +12,7 @@ namespace Restaurants.Domain.Entities
         public string UserType { get; set; } = default!;
 
         public int? CustomerId { get; set; }
-        [ForeignKey(nameof(CustomerId))]
+        //[ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
 
         [MaxLength(8)]

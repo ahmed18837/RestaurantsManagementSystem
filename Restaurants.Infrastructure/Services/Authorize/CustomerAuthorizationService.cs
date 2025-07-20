@@ -20,7 +20,7 @@ public class CustomerAuthorizationService(
         }
 
         // Admin يمتلك كل الصلاحيات
-        if (user.IsInRole(UserRoles.Admin))
+        if (user.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin))
             return true;
 
         // القراءة مسموحة لصاحب الحساب
@@ -38,6 +38,6 @@ public class CustomerAuthorizationService(
         if (user is null) return false;
 
         // Admin أو صاحب الحساب
-        return user.IsInRole(UserRoles.Admin) || user.CustomerId == customer.Id || customer.ApplicationUserId == user.Id;
+        return user.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin) || user.CustomerId == customer.Id || customer.ApplicationUserId == user.Id;
     }
 }

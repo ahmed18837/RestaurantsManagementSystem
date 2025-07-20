@@ -3,20 +3,25 @@ using Microsoft.Extensions.Logging;
 using Restaurants.Application.Orders.Commands.UpdateOrder;
 using Restaurants.Domain.Entities;
 using Restaurants.Domain.Exceptions;
+using Restaurants.Domain.Interfaces;
 using Restaurants.Domain.Repositories;
 
 namespace Restaurants.Application.Ratings.Commands.UpdateRating
 {
     public class UpdateOrderCommandHandler(ILogger<UpdateOrderCommandHandler> logger,
     IOrdersRepository ordersRepository,
-    IDishesRepository dishesRepository) : IRequestHandler<UpdateOrderCommand>
+    IDishesRepository dishesRepository,
+     IOrderAuthorizationService orderAuthorizationService) : IRequestHandler<UpdateOrderCommand>
     {
         public async Task Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Updating Order {Id}", request.Id);
-
             var order = await ordersRepository.GetByIdIncludeWithOrderItemsAsync(request.Id)
                        ?? throw new NotFoundException(nameof(Order), request.Id.ToString());
+
+            if (!orderAuthorizationService.CanModifyOrder(order))
+                throw new ForbidException();
+
+            logger.LogInformation("Updating Order {Id}", request.Id);
 
             foreach (var item in request.Items)
             {

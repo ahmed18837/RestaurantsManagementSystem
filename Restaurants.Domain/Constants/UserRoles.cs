@@ -6,5 +6,6 @@ namespace Restaurants.Domain.Constants
         public const string User = "User";
         public const string Owner = "Owner";
         public const string Admin = "Admin";
+        public const string SuperAdmin = "SuperAdmin";
     }
 }

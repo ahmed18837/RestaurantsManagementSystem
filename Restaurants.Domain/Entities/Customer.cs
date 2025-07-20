@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Restaurants.Domain.Entities
 {
@@ -23,9 +22,9 @@ namespace Restaurants.Domain.Entities
         public ICollection<Restaurant> FavoriteRestaurants { get; set; } = [];
 
 
-        // الربط مع جدول (IdentityUser)
-        public string ApplicationUserId { get; set; } = default!;
-        [ForeignKey(nameof(ApplicationUserId))]
-        public ApplicationUser User { get; set; } = default!;
+        // الربط مع جدول (IdentityUser)        
+        public string? ApplicationUserId { get; set; } = default!;
+        //[ForeignKey(nameof(ApplicationUserId))]
+        public ApplicationUser? User { get; set; } = default!;
     }
 }

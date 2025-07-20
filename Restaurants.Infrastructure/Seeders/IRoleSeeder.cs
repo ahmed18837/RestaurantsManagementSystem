@@ -36,6 +36,10 @@ namespace Restaurants.Infrastructure.Seeders
                 {
                     NormalizedName = UserRoles.Admin.ToUpper()
                 },
+                new (UserRoles.SuperAdmin)
+                {
+                    NormalizedName = UserRoles.SuperAdmin.ToUpper()
+                }
             ];
 
             return roles;

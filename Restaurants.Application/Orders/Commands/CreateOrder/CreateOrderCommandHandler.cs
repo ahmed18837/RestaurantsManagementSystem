@@ -12,8 +12,6 @@ namespace Restaurants.Application.Orders.Commands.CreateOrder
     {
         public async Task<int> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Creating order for customer {CustomerId}", request.CustomerId);
-
             _ = await customersRepository.GetByIdAsync(request.CustomerId)
                 ?? throw new NotFoundException(nameof(Customer), request.CustomerId.ToString());
 
@@ -41,6 +39,8 @@ namespace Restaurants.Application.Orders.Commands.CreateOrder
             }
 
             order.TotalPrice = totalPrice;
+
+            logger.LogInformation("Creating order for customer {CustomerId}", request.CustomerId);
 
             await ordersRepository.AddAsync(order);
             return order.Id;

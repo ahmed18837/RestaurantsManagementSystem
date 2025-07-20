@@ -128,18 +128,23 @@ namespace Restaurants.Infrastructure.Persistence
             .WithMany()
             .UsingEntity(j => j.ToTable("CustomerFavoriteRestaurants"));
 
-            builder.Entity<Customer>()
-              .HasOne(s => s.User)
-              .WithOne(u => u.Customer)
-              .HasForeignKey<ApplicationUser>(u => u.CustomerId)
-              .OnDelete(DeleteBehavior.Cascade);
-
             builder.Entity<Restaurant>()
            .HasOne(r => r.Owner)
               .WithMany(u => u.OwnedRestaurants)
               .HasForeignKey(r => r.OwnerId)
               .OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<ApplicationUser>()
+       .HasOne(a => a.Customer)
+       .WithOne(c => c.User)
+       .HasForeignKey<ApplicationUser>(a => a.CustomerId)
+       .OnDelete(DeleteBehavior.Restrict); // أو ClientSetNull لو تحب
+
+            builder.Entity<Customer>()
+                .HasOne(c => c.User)
+                .WithOne(a => a.Customer)
+                .HasForeignKey<Customer>(c => c.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Restrict); // مهم عشان تمنع الدوران
 
         }
     }

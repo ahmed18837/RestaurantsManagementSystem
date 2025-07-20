@@ -54,7 +54,6 @@ namespace Restaurants.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[Authorize(Roles = UserRoles.Owner)]
         public async Task<IActionResult> CreateRating([FromBody] CreateRatingCommand command)
         {
             int id = await mediator.Send(command);

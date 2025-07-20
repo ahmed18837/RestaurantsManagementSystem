@@ -20,6 +20,8 @@ namespace Restaurants.Application.User.Queries.GetUserByEmail
             var userDto = mapper.Map<UserDto>(user);
             userDto.Roles = await userManager.GetRolesAsync(user);
 
+            logger.LogInformation("Get User By Email : {Email}", request.Email);
+
             return userDto;
         }
     }

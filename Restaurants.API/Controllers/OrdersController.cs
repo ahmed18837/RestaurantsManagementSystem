@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Orders.Commands.CreateOrder;
 using Restaurants.Application.Orders.Commands.DeleteOrder;
@@ -15,9 +16,11 @@ namespace Restaurants.API.Controllers
     [ApiVersion("3.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
+        [Authorize(Roles = $"{UserRoles.SuperAdmin},{UserRoles.Admin}")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll([FromQuery] GetAllOrdersQuery query)
         {
             var orders = await mediator.Send(query);
@@ -25,6 +28,7 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = $"{UserRoles.Admin},{UserRoles.SuperAdmin},{UserRoles.User}")]
         public async Task<ActionResult<OrderDto?>> GetById([FromRoute] int id)
         {
             var order = await mediator.Send(new GetOrderByIdQuery(id));
@@ -41,7 +45,8 @@ namespace Restaurants.API.Controllers
         [HttpPatch("{Id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] int Id, [FromBody] UpdateOrderCommand command)
+        [Authorize(Roles = $"{UserRoles.Admin} , {UserRoles.SuperAdmin} , {UserRoles.User}")]
+        public async Task<IActionResult> UpdateOrder([FromRoute] int Id, [FromBody] UpdateOrderCommand command)
         {
             command.Id = Id;
 
@@ -52,13 +57,15 @@ namespace Restaurants.API.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteRating([FromRoute] int id)
+        [Authorize(Roles = $"{UserRoles.Admin} , {UserRoles.SuperAdmin} , {UserRoles.User}")]
+        public async Task<IActionResult> DeleteOrder([FromRoute] int id)
         {
             await mediator.Send(new DeleteOrderCommand(id));
             return NoContent();
         }
 
         [HttpGet("CustomerId")]
+        [Authorize(Roles = $"{UserRoles.Admin} , {UserRoles.SuperAdmin} , {UserRoles.User}")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetByCustomerId([FromQuery] int customerId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 5,
@@ -78,6 +85,7 @@ namespace Restaurants.API.Controllers
         }
 
         [HttpGet("RestaurantId")]
+        [Authorize(Roles = $"{UserRoles.Admin} , {UserRoles.SuperAdmin} , {UserRoles.Owner}")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetByRestaurantId([FromQuery] int restaurantId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 5,

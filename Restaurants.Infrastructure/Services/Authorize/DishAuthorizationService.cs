@@ -27,7 +27,7 @@ namespace Restaurants.Infrastructure.Services.Authorize
                 return true;
 
             if (operation == ResourceOperation.Create &&
-                (user!.IsInRole(UserRoles.Admin) || restaurant.OwnerId == user.Id))
+                (user!.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin) || restaurant.OwnerId == user.Id))
                 return true;
 
             logger.LogWarning("Authorization failed");
@@ -50,7 +50,7 @@ namespace Restaurants.Infrastructure.Services.Authorize
             if (operation == ResourceOperation.Read)
                 return true;
 
-            if (user!.IsInRole(UserRoles.Admin))
+            if (user!.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin))
                 return true;
 
             if ((operation == ResourceOperation.Update || operation == ResourceOperation.Delete)

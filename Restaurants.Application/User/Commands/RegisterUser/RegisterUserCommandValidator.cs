@@ -29,8 +29,8 @@ namespace Restaurants.Application.User.Commands.RegisterUser
                 .MaximumLength(64).WithMessage("Password cannot exceed 64 characters.");
 
             RuleFor(x => x.UserType)
-                .Must(type => new[] { UserRoles.User, UserRoles.Admin, UserRoles.Owner }.Contains(type))
-                .WithMessage("UserType must be one of: Admin, User, Owner.");
+                .Must(type => new[] { UserRoles.User, UserRoles.Admin, UserRoles.SuperAdmin, UserRoles.Owner }.Contains(type))
+                .WithMessage("UserType must be one of: Admin, User, SuperAdmin, Owner.");
 
         }
     }

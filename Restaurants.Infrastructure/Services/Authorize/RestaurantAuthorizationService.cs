@@ -24,7 +24,7 @@ namespace Restaurants.Infrastructure.Services.Authorize
                 return true;
             }
 
-            if (resourceOperation == ResourceOperation.Delete && user.IsInRole(UserRoles.Admin))
+            if (resourceOperation == ResourceOperation.Delete && (user.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin)))
             {
                 logger.LogInformation("Admin user, delete operation - successful authorization");
                 return true;

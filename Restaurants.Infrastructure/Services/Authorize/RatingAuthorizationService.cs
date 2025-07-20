@@ -24,7 +24,7 @@ namespace Restaurants.Infrastructure.Services.Authorize
 
             if (op is ResourceOperation.Delete or ResourceOperation.Update)
             {
-                if (user.IsInRole(UserRoles.Admin))
+                if (user.IsInRole(UserRoles.Admin) || user.IsInRole(UserRoles.SuperAdmin))
                     return true;
 
                 if (rating.Customer?.ApplicationUserId == user.Id)

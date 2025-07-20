@@ -1,24 +1,29 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.User.Commands.AddRole;
 using Restaurants.Application.User.Commands.AssignRoleToUser;
 using Restaurants.Application.User.Commands.ChangePassword;
+using Restaurants.Application.User.Commands.DeleteRole;
 using Restaurants.Application.User.Commands.DeleteUser;
 using Restaurants.Application.User.Commands.DisableRefreshToken;
 using Restaurants.Application.User.Commands.ForgetPassword;
 using Restaurants.Application.User.Commands.LoginUser;
 using Restaurants.Application.User.Commands.RefreshToken;
+using Restaurants.Application.User.Commands.RegisterMultipleUsers;
 using Restaurants.Application.User.Commands.RegisterUser;
 using Restaurants.Application.User.Commands.RemoveUserFromRole;
 using Restaurants.Application.User.Commands.Resend2FACode;
 using Restaurants.Application.User.Commands.ResetPassword;
 using Restaurants.Application.User.Commands.Send2FACode;
 using Restaurants.Application.User.Commands.UnlockUser;
+using Restaurants.Application.User.Commands.UpdateRole;
 using Restaurants.Application.User.Commands.UpdateUser;
 using Restaurants.Application.User.Commands.Verify2FACode;
 using Restaurants.Application.User.Dtos;
 using Restaurants.Application.User.Queries.GetAllRoles;
 using Restaurants.Application.User.Queries.GetAllUsers;
+using Restaurants.Application.User.Queries.GetRolesByEmail;
 using Restaurants.Application.User.Queries.GetUserByEmail;
 using Restaurants.Application.User.Queries.GetUserById;
 using Restaurants.Application.User.Queries.GetUserByName;
@@ -33,6 +38,22 @@ namespace Restaurants.API.Controllers
     [ApiController]
     public class IdentityController(IMediator mediator) : ControllerBase
     {
+        [HttpPost("RegisterMultiple")]
+        public async Task<IActionResult> RegisterMultiple([FromBody] RegisterMultipleUsersCommand command)
+        {
+            var results = await mediator.Send(command);
+
+            var response = results.Select((res, index) => new
+            {
+                Index = index,
+                Success = res.Succeeded,
+                Errors = res.Errors?.Select(e => e.Description)
+            });
+
+            return Ok(response);
+        }
+
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserCommand command)
         {
@@ -97,6 +118,7 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpPost("AssignRole")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleToUserCommand command)
         {
@@ -105,6 +127,7 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpPost("AddRole")]
         public async Task<IActionResult> AddRole([FromBody] AddRoleCommand command)
         {
@@ -134,6 +157,7 @@ namespace Restaurants.API.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUserById([FromRoute] string id)
         {
@@ -162,6 +186,7 @@ namespace Restaurants.API.Controllers
             return Ok(user);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpPost("UnlockUser")]
         public async Task<IActionResult> UnlockUser([FromBody] UnlockUserCommand command)
         {
@@ -170,6 +195,16 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
+        [HttpDelete("Role")]
+        public async Task<IActionResult> DeleteRole([FromQuery] string RoleName)
+        {
+            await mediator.Send(new DeleteRoleCommand(RoleName));
+
+            return NoContent();
+        }
+
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpDelete("UserFromRole")]
         public async Task<IActionResult> DeleteUserFromRole([FromBody] RemoveUserFromRoleCommand command)
         {
@@ -178,8 +213,9 @@ namespace Restaurants.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteUserFromRole([FromRoute] string Id)
+        public async Task<IActionResult> DeleteUser([FromRoute] string Id)
         {
             await mediator.Send(new DeleteUserCommand(Id));
             return NoContent();
@@ -189,21 +225,41 @@ namespace Restaurants.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateRating([FromRoute] string id, [FromBody] UpdateUserCommand command)
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserCommand command)
         {
             command.Id = id;
             await mediator.Send(command);
             return NoContent();
         }
 
-        [HttpGet("AllRoles")]
+        [HttpPatch("Role")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleCommand command)
+        {
+            await mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpGet("Roles")]
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         public async Task<ActionResult<IEnumerable<string>>> GetAllRoles()
         {
             var user = await mediator.Send(new GetAllRolesQuery());
             return Ok(user);
         }
 
+        [HttpGet("RolesByEmail")]
+        [Authorize(Roles = UserRoles.SuperAdmin)]
+        public async Task<ActionResult<IEnumerable<string>>> GetAllRolesByEmail(string email)
+        {
+            var roles = await mediator.Send(new GetRolesByEmailQuery(email));
+            return Ok(roles);
+        }
+
         [HttpGet("Role")]
+        [Authorize(Roles = UserRoles.SuperAdmin)]
         public ActionResult<IEnumerable<UserDto>> GetUsersByRole([FromRoute] string role, [FromQuery] string? searchPhrase = null,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 5,

@@ -264,10 +264,6 @@ namespace Restaurants.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique()
-                        .HasFilter("[CustomerId] IS NOT NULL");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -308,8 +304,7 @@ namespace Restaurants.Infrastructure.Migrations
                         .HasDefaultValueSql("NEXT VALUE FOR dbo.CommonSequence");
 
                     b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -327,6 +322,10 @@ namespace Restaurants.Infrastructure.Migrations
                         .HasColumnType("nvarchar(15)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique()
+                        .HasFilter("[ApplicationUserId] IS NOT NULL");
 
                     b.ToTable("Customers");
                 });
@@ -568,11 +567,6 @@ namespace Restaurants.Infrastructure.Migrations
 
             modelBuilder.Entity("Restaurants.Domain.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("Restaurants.Domain.Entities.Customer", "Customer")
-                        .WithOne("User")
-                        .HasForeignKey("Restaurants.Domain.Entities.ApplicationUser", "CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.OwnsMany("Restaurants.Domain.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
@@ -605,9 +599,17 @@ namespace Restaurants.Infrastructure.Migrations
                                 .HasForeignKey("ApplicationUserId");
                         });
 
-                    b.Navigation("Customer");
-
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Restaurants.Domain.Entities.Customer", b =>
+                {
+                    b.HasOne("Restaurants.Domain.Entities.ApplicationUser", "User")
+                        .WithOne("Customer")
+                        .HasForeignKey("Restaurants.Domain.Entities.Customer", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Restaurants.Domain.Entities.Dish", b =>
@@ -729,6 +731,8 @@ namespace Restaurants.Infrastructure.Migrations
 
             modelBuilder.Entity("Restaurants.Domain.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("Customer");
+
                     b.Navigation("OwnedRestaurants");
                 });
 
@@ -742,9 +746,6 @@ namespace Restaurants.Infrastructure.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Ratings");
-
-                    b.Navigation("User")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Restaurants.Domain.Entities.Dish", b =>

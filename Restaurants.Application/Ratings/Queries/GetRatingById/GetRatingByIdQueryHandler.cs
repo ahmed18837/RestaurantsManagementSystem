@@ -17,8 +17,6 @@ namespace Restaurants.Application.Ratings.Queries.GetRatingById
     {
         public async Task<RatingDto> Handle(GetRatingByIdQuery request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Getting rating {RatingId}", request.Id);
-
             var rating = await ratingsRepository.GetByIdWithIncluded(request.Id)
                     ?? throw new NotFoundException(nameof(Rating), request.Id.ToString());
 
@@ -27,6 +25,8 @@ namespace Restaurants.Application.Ratings.Queries.GetRatingById
             //restaurantDto.LogoSasUrl = blobStorageService.GetBlobSasUrl(restaurant.LogoUrl);
             if (!ratingAuthorizationService.Authorize(rating, ResourceOperation.Read))
                 throw new ForbidException();
+
+            logger.LogInformation("Getting rating {RatingId}", request.Id);
 
             return ratingDto;
         }

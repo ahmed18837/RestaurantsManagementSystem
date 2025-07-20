@@ -7,8 +7,6 @@ namespace Restaurants.Domain.Repositories
     public interface ICategoriesRepository : IGenericRepository<Category>
     {
         Task<(IEnumerable<Category>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
-        //Task<Category?> GetByIdAsync(int id);
-        //Task<int> Create(Category entity);
-        //Task Delete(Category entity);
+        Task<Category?> GetByIdWithDishesAndRestaurantsAsync(int id);
     }
 }

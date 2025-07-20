@@ -10,33 +10,14 @@ namespace Restaurants.Infrastructure.Repositories
 {
     public class CategoriesRepository(RestaurantsDbContext dbContext) : GenericRepository<Category>(dbContext), ICategoriesRepository
     {
-        //public async Task<int> Create(Category entity)
-        //{
-        //    dbContext.Categories.Add(entity);
-        //    await dbContext.SaveChangesAsync();
-        //    return entity.Id;
-        //}
-
-        //public async Task Delete(Category entity)
-        //{
-        //    dbContext.Remove(entity);
-        //    await dbContext.SaveChangesAsync();
-        //}
-
-        //public async Task<Category?> GetByIdAsync(int id)
-        //{
-        //    var category = await dbContext.Categories
-        //       .FirstOrDefaultAsync(d => d.Id == id);
-
-        //    return category;
-        //}
-
         public async Task<(IEnumerable<Category>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
         {
             var searchPhraseLower = searchPhrase?.ToLower();
 
             var baseQuery = dbContext
-                .Categories
+                .Categories.
+                Include(c => c.Dishes)
+                .ThenInclude(d => d.Restaurant)
                 .AsNoTracking()
                 .Where(d => searchPhraseLower == null || (d.Name.ToLower().Contains(searchPhraseLower)
                                                        || d.Description!.ToLower().Contains(searchPhraseLower)));
@@ -65,6 +46,14 @@ namespace Restaurants.Infrastructure.Repositories
             .ToListAsync();
 
             return (categories, totalCount);
+        }
+
+        public async Task<Category?> GetByIdWithDishesAndRestaurantsAsync(int id)
+        {
+            return await dbContext.Categories
+                .Include(c => c.Dishes)
+                    .ThenInclude(d => d.Restaurant)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurants.Application.Customers.Commands.AddRestaurantToFavorites;
 using Restaurants.Application.Customers.Commands.CreateCustomer;
+using Restaurants.Application.Customers.Commands.CreateMultipleCustomers;
 using Restaurants.Application.Customers.Commands.DeleteCustomer;
 using Restaurants.Application.Customers.Commands.UpdateCustomer;
 using Restaurants.Application.Customers.Dtos;
@@ -24,6 +25,18 @@ namespace Restaurants.API.Controllers
     [Authorize]
     public class CustomersController(IMediator mediator) : ControllerBase
     {
+
+        [HttpPost("bulk")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateMultipleCustomers([FromBody] CreateMultipleCustomersCommand command)
+        {
+            var ids = await mediator.Send(command);
+            return Ok(new { CreatedIds = ids });
+        }
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll([FromQuery] GetAllCustomersQuery query)
         {

@@ -47,6 +47,8 @@ namespace Restaurants.Infrastructure.Extensions
             services.AddScoped<IRatingAuthorizationService, RatingAuthorizationService>();
             services.AddScoped<IDishAuthorizationService, DishAuthorizationService>();
             services.AddScoped<ICustomerAuthorizationService, CustomerAuthorizationService>();
+            services.AddScoped<ICategoryAuthorizationService, CategoryAuthorizationService>();
+            services.AddScoped<IOrderAuthorizationService, OrderAuthorizationService>();
 
 
             services.AddHttpContextAccessor();
