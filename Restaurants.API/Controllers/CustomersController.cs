@@ -26,17 +26,6 @@ namespace Restaurants.API.Controllers
     public class CustomersController(IMediator mediator) : ControllerBase
     {
 
-        [HttpPost("bulk")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [AllowAnonymous]
-        public async Task<IActionResult> CreateMultipleCustomers([FromBody] CreateMultipleCustomersCommand command)
-        {
-            var ids = await mediator.Send(command);
-            return Ok(new { CreatedIds = ids });
-        }
-
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll([FromQuery] GetAllCustomersQuery query)
         {
@@ -91,6 +80,15 @@ namespace Restaurants.API.Controllers
             return NoContent();
         }
 
+        [HttpPost("Multiple")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateMultipleCustomers([FromBody] CreateMultipleCustomersCommand command)
+        {
+            var ids = await mediator.Send(command);
+            return Ok(new { CreatedIds = ids });
+        }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
